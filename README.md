@@ -68,7 +68,7 @@ cp .env.example .env
 
 # 2) Run the full pipeline (Python -> Stata -> R)
 snakemake --cores 1
-
+```
 
 
 ## Troubleshooting (short FAQ)
