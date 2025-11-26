@@ -1,142 +1,67 @@
-% Begin paper with a few paragraphs that:
-%    Introduce Right-to-Work (RTW) laws and their significance
+% !TEX root = ../Draft.tex
+%%[[Preview both the union effects and the wage effects in the intro, with one sentence on magnitudes (e.g., “RTW reduces union coverage by about X p.p. and lowers wages by about Y percent”).
+%% One short paragraph on contributions (RTW as policy, modern DiD, RIF distributional stuff).]]
+\section*{}
 
-%    Motivate your focus on union membership as a binary outcome
-%    Explain the empirical challenge: staggered treatment + binary outcomes
-
-
-%    State your dual contribution:
-
-%       Empirical: evaluating RTW’s effects on union membership
-
-%       Methodological: adapting Callaway–Sant’Anna DiD to binary outcomes
-
-% Preview  methods and findings
-
-\section{Introduction}
-
-\boxed{\text{Opening: Union decline } $+$ \text{ rising employer concentration} $+$ \text{ RTW changes}}
-
-Union membership in the United States has declined dramatically over the past serval decades, dropping from roughly 35\% of private sector--sector workers in the 1950
-In 1983, one in five U.S. workers belonged to a union; by 2024, union members made up just 9.9\% of the workforce.  
-%https://www.bls.gov/news.release/pdf/union2.pdf (paragraph 1)
-This decline of organized labor has been linked to rising wage inequality (Western and Rosenfeld 2011) and a redistribution of economics gains from labor to capital (Stansbury and Summers 2020).
-% Unions, Norms, and the Rise in U.S. Wage Inequality Bruce Western & Rosenfeld 2011
-% The Declining Worker Power Hypothesis: An explanation for the recent evolution of the American economy Anna Stansbury & Lawrence H. Summers 2020
-Additionally the erosion of union coverage explains a significant share (20--30\%) of the growth in wage inequality among U.S. men in recent decades (Western and Rosenfeld 2011).
-% 20 percent is only union wage ; 30 is union and non-union wages
-% Unions, Norms, and the Rise in U.S. Wage Inequality Bruce Western & Rosenfeld 2011
-Unions historically boost workers' wages (10-20 log points union wage premium has been fairly consistent (Farber et al. 2021)) and compress the wage distribution by setting pay standards that spill over to nonunion workers (Western and Rosenfeld 2011).
-% UNIONS AND INEQUALITY OVER THE TWENTIETH CENTURY: NEW EVIDENCE FROM SURVEY DATA Henry S. Farber Daniel Herbst Ilyana Kuziemko Suresh Naidu
-The decline in unionization from about one-third of private-sector male workers in the 1970s to under 8\% by the 2000s has therefore weakened an important institutional force for wage growth and equity (Fortin et al. 2022).
-%RIGHT-TO-WORK LAWS, UNIONIZATION, AND WAGE SETTING Nicole Fortin Thomas Lemieux Neil Lloyd
-
-Concurrently, economic research and policy attention have turned to employer market power in the labor market. A growing literature documents that many local labor markets are far from perfectly competitive, often dominated by a few large employers [[i.e. oligopsony or monopsonistic competition]] which can suppress wages below competitive levels.
-% Strong Employers and Weak Employees: How Does Employer Concentration Affect Wages?* Efraim Benmelech Nittai K. Bergman Hyunseob Kim
-
-For example, Azar et al. (2022) find that the average Herfindahl-Hirschman Index\footnote{Herfindahl-Hirschman Index is a measure of market concentration, indicating how much power a few firms hold in a particular industry} (HHI) of employer concentration in U.S. labor markets (defined by occupation and commuting zone) is over 3,100 – well above antitrust thresholds – and that higher concentration is associated with significantly lower posted wages
-% Page 4 paragraph 4 also includes info on current monopoly regulation 
-% LABOR MARKET CONCENTRATION José Azar Ioana Marinescu Marshall I. Steinbaum et al.
-In their estimates, moving from a relatively competitive labor market (25th percentile HHI) to a highly concentrated market (75th percentile HHI) leads to about a 17\% decline in wages.
-Other studies using administrative data echo these findings: increased local employer concentration causally reduces workers’ earnings and raises pay inequality.
-% Labor Market Concentration, Earnings Inequality, and Earnings Mobility Kevin Rinz U.S. Census Bureau 
-Notably, union presence emerges as a mitigating force in these dynamics. 
-Qiu and Sojourner (2019) show that the negative impact of labor market concentration on compensation is smaller in areas or industries with higher unionization rates.
-%Labor-Market Concentration and Labor Compensation Yue Qiu Aaron Sojourner
-Similarly, Benmelech, Bergman, and Kim (2020) find that the wage-suppressing effect of employer concentration is much stronger in markets with low union density, suggesting that unions counteract employer wage-setting power.
-% Strong Employers and Weak Employees: How Does Employer Concentration Affect Wages?* Efraim Benmelech Nittai K. Bergman Hyunseob Kim 2020
-These patterns align with classic labor economics theory: when employers have outsized monopsony power, collective bargaining can push wages closer to workers’ marginal productivity, potentially even improving efficiency by reducing deadweight losses from under-employment.
-% Labor-Market Concentration and Labor Compensation Yue Qiu Aaron Sojourner
-In contrast, when unions weaken or disappear, monopsonistic employers may gain greater ability to hold down pay, especially in isolated or highly concentrated labor markets.
-
-Against this backdrop, Right-to-Work (RTW) laws present a compelling “natural experiment” to study the interaction of union power and employer monopsony.
-RTW laws prohibit unions from requiring membership or dues payment as a condition of employment, thereby weakening unions’ financial base and bargaining clout by introducing a “free-rider” problem.
-Proponents argue RTW makes states more attractive to businesses, while opponents contend that RTW’s true purpose is to undercut unions and lower labor’s bargaining power.
-Since 2012, a wave of states—Indiana (2012), Michigan (2012), Wisconsin (2015), West Virginia (2016), Kentucky (2017), and briefly Missouri (2017)—have enacted RTW legislation after a long period of little change in RTW policy.
-This staggered adoption of RTW laws in the post-Great Recession era offers a strong setting for causal analysis.
-By comparing states that adopted RTW to those that did not, before and after adoption, we can isolate the impact of weakening unions on various labor market outcomes.
-Moreover, by examining heterogeneous effects across labor markets, we can test the central hypothesis that RTW-induced declines in union power will lead to larger drops in wages and labor’s share of income in markets where employers have greater monopsony power (i.e. in high-concentration labor markets).
-In other words, if unions particularly benefit workers in concentrated (or collusive) labor markets, then removing unions’ strength via RTW should hurt workers most in those contexts, manifesting as bigger wage declines, lower labor share, and potentially worse welfare outcomes for workers.
-
-There is strong motivation for this study from both a scientific and policy perspective. 
-First, I contribute to understanding the causes of the long-run decline in labor’s share of national income and stagnant wage growth for typical workers.
-Recent research points to declining worker bargaining power due to decreasing unions, eroded labor standards, and increased labor market concentration as a key explanation for these trends (Stansbury and Summers 2020).
-RTW laws offer a policy-induced shock to worker power, allowing us to observe what happens to wage outcomes when bargaining power is legislatively reduced.
-Second, I contribute to the current monopsony debates in labor markets.
-Evidence of explicit collusion among employers such as “no-poaching”\footnote{"no-poaching" refers where franchisees within the same franchise system (or sometimes even between different franchises and their franchisor) agree not to hire or solicit each other's employees} agreements that have been startlingly common (one study found that 58\% of major franchise chains had no-poach clauses restraining worker hiring) and increasing concentration have raised antitrust alarms in recent years (Krueger and Ashenfelter 2022). 
-% Theory and Evidence on Employer Collusion in the Franchise Sector Alan B. Krueger, Orley Ashenfelter
-%##NOTES: not sure how technical I should keep it here and if I should add a sentence about what no poaching is krueger made it seem like everyone know it? I didn't
-This paper will examine whether the presence (or absence) of unions alters how such employer market power translates into wage suppression.
-If weakening unions disproportionately harms workers in concentrated industries or rural areas with few employers, it would underscore the role of collective bargaining as a countervailing force to monopsony, much as traditional antitrust or minimum wage policies aim to be.
-Finally, this study will inform the evaluation of RTW laws’ welfare consequences. 
-% "this paper" feels like the "Therefore" for research paper writing
-Beyond wages and employment, RTW-induced changes in unionization could affect worker well-being through channels like fringe benefits, job security, income inequality, and local economic health.
-For instance, unions often secure better health insurance and pensions for workers; if RTW diminishes union coverage, one might see declines in benefit coverage as a side effect (Qiu and Sojourner 2023)
-%Labor-Market Concentration and Labor Compensation∗ Yue Qiu Aaron Sojourner
-Additionally, if wages fall, there may be ripple effects on consumer spending and community welfare.
-By analyzing welfare proxies (such as the incidence of employer-provided health insurance, poverty rates, or government assistance uptake), we will explore whether weakening unions under RTW has broader social costs or benefits.
+Unions and collective bargaining shape wage setting by raising average pay, compressing wage differences among covered workers, and affecting wages in the broader labor market \citep{FreemanMedoff1984,CardDavid2001,DiNardoJohn1996,CardDavid2003,WesternBruce2011,Farber2018}. 
+Cross‑sectional and panel evidence documents a sizable union wage premium and less dispersion of wages within the union sector relative to comparable nonunion jobs \citep{FreemanMedoff1984,BlanchflowerDavidG2003,CardDavid2003}. 
+At the same time, changes in union density and bargaining coverage are closely linked to changes in aggregate wage inequality, both over recent decades and over the longer twentieth century \citep{DiNardoJohn1996,WesternBruce2011,Farber2018}. 
+This combination of a wage premium, within‑union compression, and spillovers to nonunion wages motivates intense policy and political debate over institutions that weaken unions. 
+A central example in the United States is right‑to‑work (RTW) legislation, which prohibits mandatory dues for workers covered by a collective agreement and is widely understood to erode union finances and organizing capacity \citep{Farber2018,EllwoodDavidT1987,IchniowskiCasey1991,FortinNicole2022}. 
 
 
-\begin{center}
-    [[Open to the main research question(s):]]
-    % Subject to changed based on how long the paper is can move some stuff that isn't as insightful into the abstract
-\end{center}
+This paper studies how the adoption of RTW laws affects the level and distribution of wages in the United States. 
+Using IPUMS‑CPS microdata from 2003–2019, I treat RTW as the policy of interest and estimate its reduced‑form impact on wages through all channels, including de‑unionization and weaker union “threat effects.” 
+Building on recent work that documents strong links between unionization, spillover effects, and the wage distribution \citep{FortinNicoleM2021,Farber1984}, I exploit the staggered adoption of RTW laws in a modern difference‑in‑differences framework that is robust to heterogeneous treatment effects, and combine it with recentered influence function regressions to recover unconditional effects across the wage distribution.
+To capture distributional consequences, I combine these policy‑induced changes with recentered influence function (RIF) regressions, which recover unconditional effects on wage quantiles and related distributional statistics \citep{FirpoSergio2009}.
 
-%% doesn't have to stay here just directly states the "theme" of what topics this question can explore
-In summary, this paper will leverage newly available variation in labor policy to provide novel evidence on a classic question in labor economics: what happens to workers when unions lose power? 
-I bring a modern empirical approach harnessing staggered Difference-in-Differences methods and insights from the monopsony literature to assess the causal effect of RTW laws on wages, labor’s share of output, unionization, and related welfare outcomes. 
-By explicitly testing for differential impacts in high vs. low employer concentration environments, this paper will also shed light on the interaction between institutional worker power (unions) and market structure. 
-The results will have important implications for how labor market regulations and antitrust enforcement might improve (or harm) worker welfare in an era of declining unionization.
+\subsection{Institutional Background}
 
-The major research question is:
-\emph{Do unions lower wage rents from oligopsony? Does weakening them (through RTW) reduce wages and labor share when employer power is high?}
+Right-to-work (RTW) laws regulate the use of union‐security agreements in the private sector. 
+Under the National Labor Relations Act, a union chosen by a majority of workers becomes the exclusive bargaining representative for all workers in the bargaining unit, including nonmembers.  
+Section 14(b) of the Taft–Hartley Act permits states to prohibit union‐security clauses that require covered workers to pay union dues or agency fees as a condition of employment.  
+In RTW states, workers in unionized workplaces may receive representation and contract benefits without making any financial contribution to the union.\footnote{See, for example, the statutory discussion in \citep{Moore1998} and the overview in the \citep{CongressRTW}.}
 
-\begin{center}
-    [[Add in road map for the rest of the paper ]]
-\end{center}
+Economic and legal research argues that RTW provisions weaken unions through several channels.  
+By banning mandatory dues and fees, RTW laws create a free‑rider problem that reduces union revenue per covered worker and raises the cost of organizing and contract enforcement \citep{Farber1984,EllwoodDavidT1987}.  
+Empirical studies find that RTW adoption is associated with sizable declines in union density and bargaining coverage in both the private and public sectors \citep{Farber1984,EllwoodDavidT1987,IchniowskiCasey1991,Moore1998}.  
+More recent work confirms that RTW laws contribute to the long‑run erosion of unionization in the United States and interact with broader institutional and political trends \citep{Farber2018}.
 
-\section{Policy Background and Motivation}
+During our sample period, 2003–2019, five previously non‑RTW states adopted RTW statutes.  
+Indiana enacted its law in 2012, Michigan passed a private‑sector RTW statute later in 2012 (effective in 2013), Wisconsin adopted RTW in 2015, West Virginia followed in 2016, and Kentucky implemented RTW legislation in 2017.\footnote{See Indiana Department of Labor (2012); Michigan Public Act 349 of 2012; 2015 Wisconsin Act 1; West Virginia Code §21‑5G‑7; and Kentucky House Bill 1 (2017).\nocite{IN_DOL_RTW_2012,MI_PA_349_2012,WI_Act1_2015,WV_Code_21_5G_7,KY_HB1_2017}}  
 
-[[Here goes information relating to what the RTW laws are and how they were passed]]
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{Figures/RTW_map.pdf}
+  \caption{Diffusion of Right‑to‑Work Laws Across U.S. States,}
+  \label{fig:RTW_map}
+  \begin{figurenotes}
+States are shaded by the year in which a statewide right-to-work (RTW) law first became effective. Darker shading indicates more recent adoption (2000–2019); white states never adopted RTW through 2019. Numbers within states report the year of first adoption. Indiana, Michigan, Wisconsin, West Virginia, and Kentucky adopted RTW between 2012 and 2017 \citep{IN_DOL_RTW_2012,MI_PA_349_2012,WI_Act1_2015,WV_Code_21_5G_7,KY_HB1_2017}.
+\end{figurenotes}
+\end{figure}
 
-[[Maps of HHI gradient for all of the RTW states]]
+Figure~\ref{fig:RTW_map} plots the geographic diffusion of RTW laws and highlights these recent adoptions.  
+This staggered timing, combined with a large group of never‑RTW comparison states, underlies the difference‑in‑differences design used in the rest of the paper.
 
-[[Possible implications for labor markets and worker powers]]
+\subsection{Related Literature}
 
-[[Possible implications of monopoly and further evidence]]
+This paper builds on several strands of research on unions, wage determination, and RTW legislation.  
+A large literature documents that union contracts raise average wages, compress wage dispersion among covered workers, and generate spillovers to wages in the surrounding labor market \citep{FreemanMedoff1984,CardDavid2001,CardDavid2003,DiNardoJohn1996,WesternBruce2011,Farber2018}.  
+These studies show that union wage policies flatten wage profiles by skill and seniority and that changes in union density are closely linked to changes in aggregate wage inequality over the postwar period \citep{DiNardoJohn1996,WesternBruce2011,Farber2018}.  
 
+A second literature studies the determinants and consequences of RTW laws.  
+Early work exploits cross‑state variation to estimate effects on union membership and coverage, generally finding sizable negative impacts on unionization but more mixed effects on wages and employment \citep{Farber1984,EllwoodDavidT1987,IchniowskiCasey1991,Moore1998}.  
+More recent studies use quasi‑experimental variation from newly adopting states.  
+\citet{Reed2003} and \citet{MooreNewman1985} find modest wage reductions in RTW states after controlling for industry and worker characteristics, while \citet{ErenOzbeklik2016} use a synthetic control approach for Oklahoma and report limited wage effects but some changes in employment composition.  
+Recent empirical work on RTW laws finds that adoption is followed by large and persistent declines in union density, whereas estimated wage and employment effects are generally modest relative to broader macroeconomic forces \citep{Farber2018,ErenOzbeklik2016,FortinNicole2022}.
 
-\subsection{Simple Exploratory Model - Calculus based}
+Methodologically, the paper is related to recent advances in difference‑in‑differences designs with staggered treatment timing.  
+Traditional two‑way fixed‑effects estimators can produce biased and hard‑to‑interpret estimates when treatment effects are heterogeneous across cohorts or over time \citep{GoodmanBacon2021}.  
+I instead use the estimator of \citet{CallawaySantAnna2021} and the interaction‑weighted approach of \citet{SunAbraham2021} to recover cohort‑specific and dynamic treatment effects that are robust to such heterogeneity.  
+To study distributional consequences, I combine these estimators with the recentered influence function (RIF) regression framework of \citet{FirpoSergio2009}, which allows me to interpret RTW effects on unconditional wage quantiles and inequality indices as policy‑induced shifts in the wage distribution.
 
-We are going to model our economy as
-\[
-\mathcal{E}=\left( I, J,\left\{U_i\right\}_{i \in I},\left\{Y_j\right\}_{j \in J}, e\right)
-\]
-
-
-
-
-
-
-[[If done: Insert NK-DMP model with oligopsony w/ union counterfactual ]]
-
-More can be added as to how the union is modeled.
-John Dunlop modeled unions as firms that seeks to maximize the utility of its members
-Arthur Ross modeled unions as political institutions emphasizing the broader social and political context in which unions operate, rather than purely economic considerations. 
-The Ross view could explain deviations from the dunlop. 
-Further literature review is needed on my end to see what the consensus is currently and which is more appropriate.
-
-\section{Related Literature}
-%   Studies of RTW effects on labor market outcomes and unions
-[[Walk through previous papers: see zotero]]
-
-%   DiD methodologies: from TWFE to modern staggered DiD (C&S, Sun & Abraham)
-[[include why other papers use TWFE and how staggered DiD could remedy potential issues]]
-
-%   Gaps: application to binary outcomes and functional form issues
-[[Gaps left from cont outcome]]
-Brief peak into how difficult it would be to modify csdid for a binary outcome or other ways to model the outcomes.
-If I do add on to the econometric proof of the estimator.
-Introduce main theorems and lemmas; reference proofs in a seperate appendix
-
+Relative to the existing RTW literature, this paper makes three contributions.  
+First, it treats RTW as the policy of interest and estimates its total reduced‑form effect on wages, rather than using RTW exclusively as an instrument for union status.  
+Second, it applies modern difference‑in‑differences estimators to a long panel of IPUMS‑CPS microdata covering the full wave of RTW adoptions since 2012, which provides cleaner identification of dynamic effects than earlier two‑way fixed‑effects designs.  
+Third, by combining these methods with RIF regressions, the paper offers a detailed description of how RTW laws shift the entire wage distribution, clarifying whether any wage losses are concentrated in particular parts of the distribution or are broadly shared.
 

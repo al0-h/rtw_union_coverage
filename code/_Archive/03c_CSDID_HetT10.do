@@ -1,4 +1,4 @@
-
+/*	
 				CSDID estimates by Top 10 unionized industries 
  * ─────────────────────────────────────────────────────────────────────── */
 
@@ -58,4 +58,20 @@ coefplot                                                      ///
     (model_all, label("All Industries")), xline(0) ytitle("") mlabels mlabp(11) format(%4.3f)
 
 graph export "$figures/CSDID_HetT10.pdf", replace
+
+
+
+use "$intm/RTW_Analysis.dta" if rural == 1 ,clear
+
+collapse  (first) rtw_year  (sum) pop = wt (mean)  unmem  lnrw [aw = wt], by(state year)
+
+replace rtw_year = . if mi(rtw_year)
+
+csdid unmem [iw = pop], ivar(state) time(year) gvar(rtw_year) method(dripw) post
+estat event, window(-10 10)
+csdid_plot
+
+csdid lnrw [iw = pop], ivar(state) time(year) gvar(rtw_year) method(dripw) post
+estat event, window(-10 10)
+csdid_plot
 

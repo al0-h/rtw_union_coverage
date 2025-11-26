@@ -1,7 +1,7 @@
 /*******************************************************************************
 * FILE     : 00_Master.do
 * PROJECT  : RTW Project
-* PURPOSE  : Complies all the scripts for the analysis of the paper
+* PURPOSE  : Complies all the STATA scripts for the analysis of the paper
 *
 * CREATED  : 23 May 2025
 * STATA    : StataNow/SE 18.5 for Mac (Apple Silicon) Revision 04 Sep 2024
@@ -24,29 +24,32 @@ set scheme modern
 * 	    Paths		 *
 **********************
 
-global data "../Data"
-global intm "../Intm"
-global figures "../Presentations/Figures"
-global tables "../Presentations/Tables"
-
-cd "`c(pwd)'"      
+cd "`c(pwd)'"  
 
 
 /* ────────────────────────────────────────────────────────────────────────── *
  *                              Main Scripts   					              *
  * ────────────────────────────────────────────────────────────────────────── */
 
-do "Code/01a_Create_CPS_RTW_ind.do"  // Prepares RTW_Years data set for panel data
+do "02a_Create_CPS_RTW_ind.do"  // Prepares RTW_Years data set for panel data
 
-do "Code/01b_Gen_Appended.do"	// Merges CPS ORG data from 1979-2003
+do "02b_Generate_dta.do"	// Appends Chunked IPUMS extract
 
-do "Code/02_Processing.do"	// Creates analysis dataset with controls
+do "02c_Gen_RTW_Analysis.do"	// Generate the main dataset for Analysis
 
-do "Code/03a_Top_UnionShareInd.do"	// Creates figure with union share pre-rtw
+do "Summary_Statistics.do"
 
-do "Code/03b_TWFE_HetT10.do"	// plots estimates of TWFE of RTW on Union mem of T10 Union Ind
+do "RTW_Trends.do"
 
-do "Code/03c_CSDID_HetT10.do"	// plots estimates of CSDID of RTW on Union mem of T10 Union Ind
+do "Main_CSDID.do"
+
+do "RIF_CSDID.do"
+
+do "Heterogeneity_Robustness.do"
+
+file open done using "../data/stata_done.flag", write replace
+file close done
+display "Created data/stata_done.flag"
 
 
 

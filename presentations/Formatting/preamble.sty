@@ -1,0 +1,59 @@
+\usepackage{bbm}
+\usepackage{graphicx, subcaption} % Required for inserting images
+\usepackage{booktabs}
+\usepackage{float} % Required for "H" option in figures.
+\usepackage{lipsum}  % Required to test if the text makes it seem off center or if the figures/tables are off center
+
+% < Footnote formatting > 
+\usepackage[bottom, flushmargin, hang, multiple]{footmisc} 	% Makes footnotes stick to bottom of the page, have numbers be flush with page margin, and footnote text be indented (hang) at \footnotemargin width
+\setlength{\footnotemargin}{0pt}	% Sets footnote page margin
+\setlength{\footnotesep}{1em}		% Sets vertical separation between footnotes
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx, caption, subcaption}
+    \usepackage{setspace}         % Needs to be called before {hyperref}: control line spacing
+    
+% \usepackage{hyperref}             % PDF links and title
+\usepackage[pagebackref=true]{hyperref}   \renewcommand*\backref[1]{\ifx#1\relax \else (Cited on #1) \fi} % Include page numbers of citations in bibliography
+\usepackage{booktabs}				% Need for making tables
+\usepackage{tabularx}				% Need for making tables
+\usepackage{blindtext}              % Test formatting with random words
+% \usepackage{elsarticle}
+\usepackage{silence}
+\WarningsOff[everypage]% Suppress warnings related to package "everypage"
+
+% < For having a special column type that aligns on decimal (.)
+\usepackage{dcolumn}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+
+% Package loaded so can define centering in the table with a P
+\usepackage{array} 
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\newcommand\mc[1]{\multicolumn{1}{c}{#1}} % wrapper to realign (non-decimal) text within table
+\usepackage[section]{placeins}
+
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+% < For tracking changes >
+\usepackage[authormarkup=none]{changes}              % For tracking changes 
+%\usepackage[authormarkup=none][final]{changes}      % Use this line when you don't want markup to appear anymore!
+% Can use \added, \deleted, \replaced{new}{old}, and can always add [id=<authorid>,remark=<note>], e.g., \added[id=V]{VM added this text}
+% Can print a list of changes using: \listofchanges[style=<list|summary>]
+%\setremarkmarkup{[\textcolor{Changes@Color#1}{#2}]} % Set appearance of the remark
+\definechangesauthor[color=orange]{V}    % [V] is the <authorid>
+\colorlet{Changes@Color}{orange}		 % Default color
+
+\usepackage{natbib}
+% \bibliographystyle{unsrtnat}
+
+\doublespacing %from {setspacing}
+
+\usepackage{float}
+% Figs at end \floatplacement{figure}{H}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newtheorem{prop}{Proposition}
+
+% Package for landscape mode
+\usepackage{pdflscape}

@@ -1,0 +1,53 @@
+# Snakefile
+
+envvars:
+    "IPUMS_MICRODATA_API_KEY"
+
+
+
+rule all:
+    input:
+        "data/map_done.flag"
+
+
+# --------------------------------------------------------------------
+# 1) Python: IPUMS CPS extract
+# --------------------------------------------------------------------
+rule ipums_extract:
+    output:
+        "data/ipums_done.flag"
+    shell:
+        """
+        python code/01_IPUMS_Extract.py
+        """
+
+
+# --------------------------------------------------------------------
+# 2) Stata: master do-file
+# --------------------------------------------------------------------
+rule master_stata:
+    input:
+        "data/ipums_done.flag"
+    output:
+        "data/stata_done.flag"
+    shell:
+        """
+        stata-mp -b do code/00_Master.do
+        """
+        # If your executable is different, change `stata-mp` to `stata`,
+        # `stata-se`, etc.
+
+
+# --------------------------------------------------------------------
+# 3) R: RTW map / final analysis
+#    - Script: code/RTW_map.r
+# --------------------------------------------------------------------
+rule rtw_map:
+    input:
+        "data/stata_done.flag"
+    output:
+        "data/map_done.flag"
+    shell:
+        """
+        Rscript code/RTW_map.r
+        """

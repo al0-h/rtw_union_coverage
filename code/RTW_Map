@@ -1,0 +1,107 @@
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(usmap)
+library(sf)
+
+
+# Map of Adoption
+
+# ---- 1. Read RTW data ----
+rtw <- read_excel("data/RTW_Years.xlsx", sheet = "Sheet1")
+
+# ---- 2. Define RTW adoption-year categories (for legend) ----
+rtw <- rtw %>%
+  mutate(
+    state_lower = tolower(state),
+    rtw_cat = case_when(
+      is.na(rtw_year)                      ~ "Never RTW",
+      rtw_year < 1960                      ~ "Before 1960",
+      rtw_year >= 1960 & rtw_year < 1980   ~ "1960–1979",
+      rtw_year >= 1980 & rtw_year < 2000   ~ "1980–1999",
+      rtw_year >= 2000 & rtw_year <= 2019  ~ "2000–2019",
+      TRUE                                 ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(rtw_cat))
+
+rtw$rtw_cat <- factor(
+  rtw$rtw_cat,
+  levels = c("Never RTW", "Before 1960", "1960–1979", "1980–1999", "2000–2019")
+)
+
+# ---- 3. US polygons & join ----
+us_states_sf <- usmap::us_map(regions = "states")   
+
+map_sf <- us_states_sf %>%
+  left_join(rtw, by = c("full" = "state"))
+
+# ---- 4. State centroids for adoption-year labels (better centering of of dates) ----
+labels_sf <- usmapdata::centroid_labels("states") %>%  
+  left_join(rtw, by = c("full" = "state")) %>%
+  filter(!is.na(rtw_year))
+
+# ---- 5. One-color blue discrete palette ----
+fill_cols <- c(
+  "Never RTW"   = "#ffffff",  # white
+  "Before 1960" = "#e7f5f6",  # light, slightly warm green 
+  "1960–1979"   = "#b8e5dd",  # light teal
+  "1980–1999"   = "#72c7c6",  # mid teal / turquoise
+  "2000–2019"   = "#2f8ac4"   # teal‑blue, darkest that still looks good for black text
+)
+
+# bounding box to tweak y-axis range
+bbox <- st_bbox(map_sf)
+
+# ---- 6. Map with legend bottom-right, closer to map ----
+panelA_map <- ggplot() +
+  geom_sf(
+    data  = map_sf,
+    aes(fill = rtw_cat),
+    color = "black",
+    linewidth = 0.2
+  ) +
+  geom_sf_text(
+    data = labels_sf,
+    aes(label = rtw_year),
+    size = 2.25
+  ) +
+  coord_sf(
+    xlim = c(bbox["xmin"], bbox["xmax"]),  
+    ylim = c(bbox["ymin"] + 1, bbox["ymax"])  
+  ) +
+  scale_fill_manual(
+    values = fill_cols,
+    name   = "RTW adoption year",
+    drop   = FALSE
+  ) +
+  theme_void() +
+  guides(
+    fill = guide_legend(
+      title.position = "top",
+      ncol = 1,
+      byrow = TRUE
+    )
+  ) +
+  theme(
+    legend.position      = c(1.05, 0.06),  
+    legend.justification = c("right", "bottom"),
+    legend.title         = element_text(size = 7),
+    legend.text          = element_text(size = 6),
+    legend.key.height    = unit(0.3, "lines"),
+    legend.key.width     = unit(0.8, "lines"),
+    legend.background    = element_blank(),
+    plot.margin          = margin(t = 5.5, r = 8, b = 8, l = 5.5)
+  )
+
+
+# Save for LaTeX
+ggsave(
+  "presentations/Figures/RTW_map.pdf",
+  panelA_map,
+  width  = 7,
+  height = 4
+)
+
+file.create("data/map_done.flag")
+cat("Created data/map_done.flag\n")

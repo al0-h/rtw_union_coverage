@@ -14,12 +14,12 @@
 *
 ****************************************************************************/
 
-log using "$folder/code/Logs/01a_Create_CPS_RTW_ind", replace
+log using "Logs/01a_Create_CPS_RTW_ind", replace
 
 
 * RTW data excel sheet has the year and month that the right to work laws were passed.
 * ... sources can be found hyperlinked in the excel spreadsheet
-import excel "$data/RTW_Years.xlsx", sheet("Sheet1") firstrow clear
+import excel "../data/RTW_Years.xlsx", sheet("Sheet1") firstrow clear
 
 * Generate years variables
 expand year
@@ -44,13 +44,18 @@ format obs_date %tm
 gen rtw = obs_date >= adopt_date  if !missing(adopt_date)
 replace rtw = 0 if missing(adopt_date)
 
-gen alwaystreat = adopt_date < ym(1979,1) if !missing(adopt_date)
+* The states that have always had RTW laws through out our sample window
+gen alwaystreatcondtreat = adopt_date < ym(2002,1) if !missing(adopt_date)  
+
+g alwaystreat = adopt_date < ym(2002,1) 
 	
 drop obs_date adopt_date
 	
 rename (state icpsr_code) (state_name state) // change names to be CPS ready
 
-save "$intm/RTW_States", replace
+keep if year >= 1983 & year <= 2023
+
+save "../intm/RTW_States", replace
 
 log close
 

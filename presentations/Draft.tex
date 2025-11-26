@@ -1,5 +1,8 @@
+% !TEX root = ../Draft.tex
 % AEJ-Article.tex for AEA last revised 22 June 2011
-\documentclass[draftmode]{Formatting/AEA}
+\documentclass[AEJ, finalmode]{Formatting/AEA}
+\usepackage{Formatting/preamble}
+
 %\documentclass[AEJ]{Formatting/AEA}
 
 % The mathtime package uses a Times font instead of Computer Modern.
@@ -15,8 +18,15 @@
 % variety of citation commands than latex supports natively. See below.
 
 % Uncomment the next line to use the natbib package with bibtex 
-%\usepackage{natbib}
+\usepackage{natbib}
+\usepackage{amsmath,amssymb,amsfonts,url,graphicx}
 
+
+% define operators used in Methodology
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+% optional convenience:
+\newcommand{\E}{\mathbb{E}}
 % Uncomment the next line to use the harvard package with bibtex
 %\usepackage[abbr]{harvard}
 
@@ -30,7 +40,6 @@
 
 %\color[rgb]{0.5,0.5,0.5} %grey
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\draftSpacing{1.5}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Current plan
@@ -44,43 +53,36 @@
 
 \begin{document}
 
-\title{Right-to-Work Laws, Union Decline, and Employer Power: Evidence from Staggered Reforms in U.S. Labor Markets}
-\shortTitle{RTW \& Employer Power}
-\author{Alexander Le\'on-Hern\' andez\thanks{%
-Surname1: affiliation1}}
+\title{Right-to-Work, Union Coverage, and the Structure of Pay}
+\shortTitle{Right-to-Work, Unions, and Pay}
+\author{Alexander Leon-Hernandez}
+% \author{Alexander Leon-Hernandez\thanks{%
+% Surname1: affiliation1}}
 \date{\today}
 \pubMonth{December}
 \pubYear{2025}
-\pubVolume{Vol}
-\pubIssue{Issue}
+\pubVolume{}
+\pubIssue{}
 \JEL{}
 \Keywords{}
 
 \begin{abstract}
- abstract here.
+Right-to-work laws weaken unions but their effects on wage levels and inequality are uncertain. 
+I estimate how adoptions of right-to-work statutes in five U.S. states from 2003–2019 affected unionization and the wage distribution. 
+Using IPUMS-CPS microdata, modern difference-in-differences estimators, and RIF regressions, I find that right-to-work laws reduce union membership and coverage by about 1.5 percentage points but generate modest wage declines, about one percent or less across most of the distribution, with little change in standard inequality measures. 
+The results suggest that right-to-work laws mainly lower overall pay rather than reshape the wage structure.
 \end{abstract}
 
 \maketitle
 
 \input{Sections/1_Introduction}
+
 \input{Sections/2_Methodology}
 \input{Sections/3_Main}
 \input{Sections/4_Conclusion}
 \input{Sections/5_Appendix}
 
-\bibliographystyle{Formatting/aea}
-\bibliography{Bibliography/RTW_Project_Lit_Review.bib}
-
-% Use either natbib or harvard with BibTeX (not both)
-
-% Check formatting of journal articles, working papers, data sources
-
-\appendix
-
-%\input{Sections/5_Appendix}
-
-
-
-
+\bibliographystyle{aea} 
+\bibliography{RTW_Project_Lit_Review}
 \end{document}
 

@@ -12,6 +12,7 @@
 *.smcl
 *.stpr
 *.stsem
+*.dat
 
 # Graphic export files from Stata
 # Stata command graph export: http://www.stata.com/manuals14/g-2graphexport.pdf
@@ -357,3 +358,4 @@ data/CPS_ORG_dta/
 *.xlsx
 *.xml
 *.html
+*.dat.gz

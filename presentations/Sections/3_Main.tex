@@ -1,70 +1,269 @@
-\section{Data}
-% Source: CPS MORG or Hirsch–Macpherson union database
-[[explain CPS ORG data: why the selected date range]]
-% CPS union questions first introduced in 1983 
+% !TEX root = ../Draft.tex
+\section{Empirical Strategy}\label{sec:method}
 
-% Unit of observation: individual workers (state-year panel)
-[[Unit of obs]]
+\subsection{Setup and notation}
 
-% Key variables:
+The unit of observation is an individual CPS ORG worker in a given survey month. 
+We pool monthly IPUMS CPS ORG samples from 2003–2019 and treat the data as a repeated cross-section. 
+Let $Y_{ist}$ denote the outcome for worker $i$ living in state $s$ in calendar year $t$. 
+In different specifications, $Y_{ist}$ is union coverage, union membership, a free-rider indicator, or log hourly wages. 
+Right-to-work status varies at the state–year level. 
+Let $D_{st}$ be an indicator equal to one if state $s$ has a RTW law in force in year $t$ (defined below), and zero otherwise. For states that adopt RTW during the sample period, let $G_s$ denote the first year in which $D_{st}=1$; for never-adopting states we set $G_s=0$. 
+Our main estimands are the cohort- and event-time specific average treatment effects on the treated, $\text{ATT}(g,t)$, and averages of these effects over post-adoption periods.
 
-%   Union membership indicator
+\subsection{Treatment timing and groups}
 
-%   RTW adoption dates by state
+We construct a state–month panel of RTW status and merge it to the CPS file by state and calendar month. 
+The monthly RTW indicator equals one beginning in the month when a state's RTW statute becomes effective. 
+For the empirical analysis, we aggregate this information to the annual level: $D_{st}=1$ if RTW is in force for at least six months of year $t$ in state $s$, and $D_{st}=0$ otherwise. 
+The first year with $D_{st}=1$ defines the cohort $G_s$ for each adopting state. 
+States that have RTW in place before 2003 are treated as RTW throughout our sample window and serve as always-treated; states that never adopt RTW by 2019 are never-treated. 
+States that switch from $D_{st}=0$ to $D_{st}=1$ between 2003 and 2019 are “new adopters’’ and provide the variation in treatment timing used by the estimator. 
+In the event-study graphs we index time relative to adoption, using a symmetric window of five leads and five lags around the year before adoption (event time $-1$) as the omitted baseline.
+%% More about different windows in the appendix section
 
-%   Covariates: age, education, race, gender, industry, occupation
-[[Any issues with harmonization of data]]
+\subsection{Difference-in-differences design}
 
-% Sample restrictions (e.g., private sector only)
-[[Sample restrictions]]
+Identification relies on the standard parallel-trends assumption for staggered adoption: for each cohort $g$, the evolution of untreated potential outcomes for workers in adopting states would have followed that of the comparison states in the absence of RTW. 
+We implement the Callaway and Sant'Anna (2021) difference-in-differences estimator for multiple periods and variation in treatment timing. 
+Time is indexed by calendar year, the cohort variable is $G_s$, and we use the doubly-robust inverse-probability weighting estimator (\texttt{method(dripw)}). 
+Observations are weighted by the CPS earnings weight and standard errors are clustered at the state level. 
+For each outcome $Y_{ist}$ we report (i) event-study coefficients, which plot $\text{ATT}(g,t)$ aggregated across cohorts by event time, and (ii) average post-adoption effects that aggregate the cohort- and time-specific ATTs over post-treatment years.
 
-% Summary statistics
-[[\textbf{SUM STATS TABLE RTW V NON-RTW}]]
-% Im not sure how useful this would be 
+\subsection{Baseline specification and controls}
+In all specifications we condition on a common set of worker characteristics. 
+Let $X_{ist}$ denote a vector of controls including a quadratic in potential experience (constructed from age and education), dummies for four education groups, indicators for female, race and Hispanic origin, eight broad occupation groups (plus an “unknown’’ category), public-sector employment, and metropolitan residence. 
+These controls absorb systematic differences in wages and union status across observable worker types and help stabilize the estimation of propensity scores in the doubly robust procedure. 
+We use the same control set for all outcomes (union coverage, union membership, free riding, and log hourly wages), and we always apply the CPS earnings weight and cluster standard errors at the state level, as described above.
 
 
-\section{Empirical Results}
-\subsection{Descriptive Trends (May Remove)}
-% Graph: Union membership over time by RTW status
-[[\textbf{Union membership over time by RTW status}]]
+Our object of interest is the cohort- and period-specific average treatment effect on the treated (ATT) defined by \citep{CallawaySantAnna2021}. 
+Let $Y_{ist}$ denote the outcome for worker $i$ in state $s$ and calendar year $t$, and let $G_s$ denote the first year in which state $s$ adopts a RTW law ($G_s=0$ for never-treated states). 
+For a given adopting cohort $g$ and year $t \ge g$, the ATT is
+\begin{equation}
+\label{eq:att}
+\text{ATT}(g,t)
+= \mathbb{E}\big[ Y_{ist}(1) - Y_{ist}(0) \,\big|\,
+G_s = g,\; t \ge g \big],
+\end{equation}
+where $Y_{ist}(1)$ and $Y_{ist}(0)$ are potential outcomes with and without RTW. 
+Under the parallel-trends and overlap assumptions in \citet{CallawaySantAnna2021}, we can identify $\text{ATT}(g,t)$ by comparing workers in states that adopt RTW in year $g$ to workers in states that are not yet treated (plus never-treated states) in the same year.
 
-figure centered at before and after adoption
-% Caption goes below figure. Use figurenotes if needed for sources.
+We estimate \eqref{eq:att} using the doubly robust difference-in-differences estimator implemented in the \texttt{csdid} command, with calendar year as the time index and $G_s$ as the treatment cohort. 
+The estimator combines propensity-score weighting and outcome regression to construct a counterfactual for each treated cohort-year and then recovers $\widehat{\text{ATT}}(g,t)$ for all $g$ and $t$. 
+To summarize the dynamics, we aggregate these cohort-specific effects by event time $k=t-g$ and report
+\begin{equation}
+\label{eq:event}
+\delta_k
+= \sum_{g} \omega_{g,k} \, \text{ATT}(g, g+k),
+\end{equation}
+where $\omega_{g,k}$ are nonnegative weights that sum to one over cohorts with $t=g+k$ in the sample. 
+The coefficients $\delta_k$ form the event-study profiles plotted in our figures, with $k=-1$ (the year before adoption) normalized to zero.
 
-\subsection{ATT Estimates from Linear Model}
-% Use Callaway–Sant’Anna DiD with LPM
+The vector of worker characteristics $X_{ist}$ that enters the doubly robust adjustment is the same in all specifications cluster standard errors at the state level.
 
-% Event-study style plot of ATT(g,t)
-[[\textbf{Event-study style plot of ATT lin CS Did}]]
 
-% Table of average treatment effects
-[[\textbf{Table of ATT effects}]]
-% Table caption goes above. Tablenotes go below.
+\subsection{Alternative estimator and robustness}
+Our baseline estimates rely on the group–time difference‑in‑differences framework of \citet{CallawaySantAnna2021}, implemented with the doubly robust estimator. 
+This approach is convenient in our setting because it delivers cohort–time average treatment effects that can be aggregated into overall post‑adoption effects and used consistently across the various outcomes we study, including RIF‑based measures of wage quantiles and subsamples defined by industry unionization. 
+As a robustness check, we also estimate dynamic effects using the interaction‑weighted event‑study estimator of \citet{SunAbraham2021}, which likewise corrects the weighting problems of two‑way fixed‑effects models with staggered adoption. 
 
-\subsection{Binary Estimator Results[[IF done]]}
-% Apply your method (logit-based marginal ATT(g,t))
+Appendix Figure A shows that the Sun–Abraham event‑study profiles are very similar to our baseline csdid estimates for unionization and wages, so we focus on the Callaway–Sant’Anna results in the main text.
 
-% Compare trajectory of effects to LPM-based results
-[[\textbf{Event-study style plot of ATT binary CS Did}]]
-% Interpret change in probabilities (e.g., “2 pp decline”)
+%[[test]] 
+\subsection{Distributional effects via RIF regressions}
 
-\subsection{Robustness and Heterogeneity}
-% Alternative comparison groups (never-treated vs not-yet-treated)
+Beyond average wage effects, we also study how RTW laws affect different parts of the wage distribution. 
+Following \citet{FirpoSergio2009}, we use recentered influence function (RIF) regressions for unconditional quantiles of log hourly wages. For a given unconditional quantile $\tau$ of $\ln(\text{wage})$, we construct the RIF of log wages at $\tau$ and treat this transformed variable as the outcome in the same difference-in-differences design described above. 
+The resulting coefficients can be interpreted as changes in the unconditional $\tau$th quantile of log wages.
 
-% Subgroup analysis (e.g., manufacturing, education level)
+Operationally, we estimate separate Callaway--Sant'Anna DID specifications with the RIF of log hourly wages as the dependent variable at several quantiles (e.g.\ the 10th, 25th, 50th, 75th, and 90th unconditional quantiles). 
+We keep the same sample, weighting scheme, and set of controls as in the baseline mean-wage specification, and continue to cluster standard errors by state. 
+In the results section, we summarize these estimates by plotting the ATT on log wages across quantiles, which shows how RTW affects the wage distribution rather than only the mean.%
 
-% Sensitivity to control set
+\subsection{Heterogeneity by industry unionization}
 
-% Split into high and Low HHI areas
+We also examine whether RTW effects differ between more and less unionized industries. Using the pre-period CPS data, we compute industry-level union coverage rates (weighted by earnings weights) and define a high-union-industry indicator equal to one for industries with coverage above the median and zero otherwise. This industry measure is merged back to the full worker sample. To study heterogeneity, we re-estimate the baseline CSDID specifications separately for workers in high- and low-union industries, focusing on union outcomes and log wages. Comparing the resulting event-study profiles and average effects across these two subsamples allows us to assess whether RTW laws have stronger impacts in segments of the labor market where unions were initially more prevalent.
 
-\section{Discussion}
-% What do the results suggest about RTW and union power?
-[[What do these finding show about union power]]
 
-% IF DONE: does the new method improve interpretability or accuracy?
+\section{Empirical Results} \label{sec:results}
 
-% IF DONE: Why this matters for applied DiD work with binary outcomes
-%[[Why this matters for applied DiD work]]
+This section presents the effects of right-to-work (RTW) adoption on unionization and wages. 
+I first document the dynamic response of union membership and coverage, then turn to mean wage effects, distributional effects across the wage distribution, and heterogeneity by industry unionization.
 
-% Broader labor policy implications
-[[Broader implication for further labor policy]]
+\subsection{Effects on union outcomes}
+
+Figure~2 plots event-study estimates of the impact of RTW laws on union membership and coverage. 
+The pre-treatment coefficients are small and statistically indistinguishable from zero, indicating no strong differential trends in union outcomes between new-RTW states and the comparison group in the years leading up to adoption. 
+After RTW takes effect, both membership and coverage decline steadily over the subsequent four to five years, with the point estimates stabilizing around a loss of roughly 1.5–2.5 percentage points relative to the pre-adoption baseline.
+
+Table~\ref{tab:rtw_union_wage} summarizes these patterns by reporting average post-adoption treatment effects. 
+In the baseline specification with controls (column 2), RTW adoption reduces the union membership rate by 1.5 percentage points and the coverage rate by a similar 1.5 percentage points. 
+Given pre-adoption unionization rates in new-RTW states, these estimates correspond to roughly a ten percent decline in both membership and coverage. 
+By contrast, the estimated effect on the free-rider rate is essentially zero, suggesting that RTW operates mainly by shrinking the share of workers in unionized workplaces rather than by inducing large changes in the member–nonmember composition within covered workplaces.
+
+Columns (3) and (4) of Table~\ref{tab:rtw_union_wage} show that these unionization effects are highly uneven across the labor market. 
+In industries that were more unionized in the pre-period, RTW adoption is followed by a decline of about 2.6 percentage points in union membership and 2.4 percentage points in coverage, whereas the corresponding effects in less unionized industries are near zero. 
+This pattern is consistent with the view that RTW laws bite hardest in segments of the labor market where unions were initially more entrenched.
+
+\begin{figure}[ht]
+    \centering
+    \caption{Impact of RTW on Union Outcomes}
+    \captionsetup[subfigure]{labelformat=empty}
+ \begin{subfigure}{0.49\textwidth}
+\includegraphics[width=\linewidth]{Figures/csdid/Full_mem.pdf}
+  \caption{Panel A. Union membership rate}
+    \label{fig:Full_mem}
+ \end{subfigure}
+    \hfill
+ \begin{subfigure}{0.49\textwidth}
+\includegraphics[width=\linewidth]{Figures/csdid/Full_cov.pdf}
+  \caption{Panel B. Union coverage rate}
+    \label{fig:Full_cov}
+ \end{subfigure}
+    \begin{figurenotes}
+        This figure plots event-study estimates of the impact of right-to-work (RTW) laws on union outcomes using the \citep{CallawaySantAnna2021} difference-in-differences estimator. 
+        The horizontal axis measures years relative to a state's first RTW adoption ($t=0$), and the vertical axis reports average treatment effects on the treated (ATT). 
+        Coefficients are estimated for leads and lags from $t=-5$ to $t=+5$ and normalized so that the coefficient in $t=-1$ is zero. 
+        Points show estimated ATTs, vertical bars show 95 percent confidence intervals. 
+        The vertical line at $t=0$ marks the year of RTW adoption. 
+        Panel A uses an indicator for union membership as the outcome; Panel B uses an indicator for union coverage (including nonmember workers covered by a union contract). 
+        All specifications control for potential experience (and its square), education, gender, race/ethnicity, occupation, public-sector status, and MSA fixed effects, are weighted by earnings weights, and cluster standard errors at the state level.
+    \end{figurenotes}
+\end{figure}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Baseline right-to-work effects on union outcomes and log hourly wages}
+    \label{tab:rtw_union_wage}
+\vspace{0.3em}\resizebox{\textwidth}{!}{
+\input{Tables/table2_rtw_union_wage.tex}
+}
+\begin{tablenotes}
+    Each cell reports the average post-adoption treatment effect of right-to-work (RTW) laws on the listed outcome using the \citet{CallawaySantAnna2021} difference-in-differences estimator, implemented with the doubly robust inverse-probability-weighted method. 
+    Column (1) uses a specification without worker covariates. 
+    Column (2) reports the baseline csdid specification with controls for potential experience (and its square), educational attainment, gender, race/ethnicity, broad occupation group, public-sector status, and metropolitan residence. 
+    Columns (3) and (4) re-estimate the baseline specification separately for workers in high- and low-union industries, defined using pre-RTW industry union coverage above or below the median. 
+    All regressions drop always-RTW states, apply CPS earnings weights, and cluster standard errors at the state level. 
+    Standard errors are reported in parentheses.
+\end{tablenotes}
+\end{table}
+
+\subsection{Effects on average wages}
+
+Figure~3 turns to log hourly wages. 
+The event-study coefficients again show little evidence of systematic pre-trends, wage effects in the five years prior to RTW adoption are close to zero and statistically insignificant. 
+After adoption, the point estimates drift slightly downward, with the largest negative effects on the order of one to two log points (about one to two percent), but the confidence intervals are wide and include zero in most post-treatment years.
+
+The baseline csdid estimates in Table~\ref{tab:rtw_union_wage} confirm that average wage effects are modest. 
+In the specification with controls (column 2), the estimated average post-adoption effect on log hourly wages is effectively zero, with a standard error of 0.006. 
+This implies a 95 percent confidence interval of roughly plus or minus 1.2 percent, so the data are consistent with small wage gains or losses but rule out large average effects of RTW on hourly pay over the sample period. 
+Together with the event-study evidence, this suggests that the substantial post-RTW declines in unionization do not translate into commensurately large short- or medium-run changes in mean wages.
+
+\begin{figure}[ht]
+    \centering
+    \caption{Impact of RTW on log Hourly Wage}
+    \includegraphics[width=\linewidth]{Figures/csdid/Full_lnwage.pdf}
+    \begin{figurenotes}
+    This figure plots event-study estimates of the effects of right-to-work (RTW) laws on log hourly wages using the \citep{CallawaySantAnna2021} difference-in-differences estimator, implemented with the doubly robust inverse-probability-weighted method. 
+    The horizontal axis measures years relative to a state's first RTW adoption ($t = 0$), and the vertical axis reports average treatment effects on the treated (ATT) in log wage units. 
+    Coefficients are estimated for leads and lags from $t = -5$ to $t = +5$ and normalized so that the coefficient in $t = -1$ is zero. 
+    Points show estimated ATTs and vertical bars show 95 percent confidence intervals; the vertical line at $t = 0$ marks the year of RTW adoption.
+    The estimation sample drops states that are always under a RTW law over the sample period, applies earnings weights, and controls for potential experience (and its square), educational attainment, gender, race/ethnicity, occupation, public-sector status, and MSA fixed effects; standard errors are clustered at the state level. For small effects, a value of 0.01 on the vertical axis corresponds approximately to a 1 percent change in hourly wages.
+    \end{figurenotes}
+\end{figure}
+
+\subsection{Distributional effects on wages}
+
+Average effects may mask heterogeneous impacts across the wage distribution. 
+Figure~4 summarizes the RIF–csdid estimates for unconditional quantiles of log hourly wages. 
+The point estimates are small at all quantiles, generally within a band of plus or minus two percent, and the confidence intervals are wide. 
+At the very bottom of the distribution (10th percentile) the point estimate is slightly positive, while at the upper quantiles the estimates are modestly negative, but none of these differences is precisely estimated.
+
+The near-uniformity of the quantile-specific effects implies little change in overall wage dispersion. 
+The implied effects on standard inequality measures, such as the 90–10 and 50–10 wage gaps, are therefore small, with confidence intervals that comfortably include zero. 
+In other words, within the period and set of states studied here, RTW laws appear to nudge the entire wage distribution down by at most a few percent, rather than sharply widening or narrowing wage inequality.
+
+
+\begin{figure}[ht]
+    \centering
+    \caption{}
+    \includegraphics[width=\linewidth]{Figures/rtw_rif_quantiles_pctwage_csdid.pdf}
+    \begin{figurenotes}
+        This figure plots RIF–csdid estimates of the effect of right-to-work (RTW) laws on unconditional quantiles of log hourly wages. 
+        The horizontal axis indexes unconditional wage quantiles (10th, 25th, 50th, 75th, and 90th percentiles); the vertical axis reports the implied percent change in hourly wages at each quantile. 
+        Points show average post-adoption ATTs and vertical bars show 95 percent confidence intervals. 
+        Estimates use the \citet{CallawaySantAnna2021} difference-in-differences estimator with recentered influence functions of log wages as outcomes, the same sample and control set as the baseline wage specification, CPS earnings weights, and standard errors clustered at the state level.
+    \end{figurenotes}
+\end{figure}
+
+\subsection{Heterogeneity by industry unionization}
+
+Finally, I examine whether RTW effects differ between more and less unionized industries. 
+Columns (3) and (4) of Table~\ref{tab:rtw_union_wage} show that the declines in union membership and coverage are concentrated in high-union industries, in those sectors, RTW reduces membership by about 2.6 percentage points and coverage by 2.4 percentage points, whereas in low-union industries the corresponding estimates are close to zero. 
+This pattern suggests that RTW mainly erodes union presence where it was initially strongest.
+
+Figure~5 reports event-study estimates of log wages separately for below- and above-median union industries. 
+In low-union industries, the wage coefficients fluctuate around zero both before and after adoption, with no clear persistent pattern. 
+In contrast, in high-union industries the post-RTW coefficients tend to be somewhat more negative, with point estimates that reach roughly three log points (about three percent) in some post-treatment years, although the associated confidence intervals are wide. 
+These results are broadly consistent with somewhat larger wage losses in more union-intensive sectors, but they are imprecisely estimated and remain modest in absolute size.
+
+
+\begin{figure}[ht]
+    \centering
+    \caption{Impact of RTW on Log Hourly Wage}
+    \captionsetup[subfigure]{labelformat=empty}
+
+    \begin{subfigure}{0.49\textwidth}
+        \caption*{Panel A}
+        \includegraphics[width=\linewidth]{Figures/csdid/0_UNFull_lnwage.pdf}
+        \caption*{Below Median Union Membership Rate}
+        \label{fig:Full_mem}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \caption*{Panel B}
+        \includegraphics[width=\linewidth]{Figures/csdid/1_UNFull_lnwage.pdf}
+        \caption*{Above Median Union Membership Rate}
+        \label{fig:Full_cov}
+    \end{subfigure}
+
+    \begin{figurenotes}
+    This figure plots event-study estimates of the effects of right-to-work (RTW) laws on log hourly wages using the \citep{CallawaySantAnna2021} difference-in-differences estimator, implemented with the doubly robust inverse-probability-weighted method. 
+    The horizontal axis measures years relative to a state's first RTW adoption ($t = 0$), and the vertical axis reports average treatment effects on the treated (ATT) in log wage units. 
+    Coefficients are estimated for leads and lags from $t = -5$ to $t = +5$ and normalized so that the coefficient in $t = -1$ is zero. 
+    Points show estimated ATTs and vertical bars show 95 percent confidence intervals; the vertical line at $t = 0$ marks the year of RTW adoption.
+    The estimation sample drops states that are always under a RTW law over the sample period, applies earnings weights, and controls for potential experience (and its square), educational attainment, gender, race/ethnicity, occupation, public-sector status, and MSA fixed effects; standard errors are clustered at the state level. For small effects, a value of 0.01 on the vertical axis corresponds approximately to a 1 percent change in hourly wages.
+    Additionally the estimation sample in Panel A is restricted to below median unionized industries and similar for Panel B with below median.
+    \end{figurenotes}
+\end{figure}
+
+
+\section{Discussion}\label{sec:discussion}
+
+The results paint a clear picture of how RTW laws affect unions and wages in the recent wave of adoptions. 
+RTW statutes lead to large and persistent reductions in union membership and coverage, especially in sectors that were initially more unionized. 
+By contrast, the estimated effects on average wages are small and imprecise, and the distributional analysis reveals little systematic change in wage inequality. 
+Taken together, the evidence suggests that RTW laws primarily shift the overall level of unionization and, at most, nudge the wage distribution downward by a modest amount.
+
+These findings speak to ongoing debates about the role of unions in shaping the wage structure. 
+Classic work documents a sizeable union wage premium, within-union wage compression, and spillovers to nonunion wages, and argues that the long-run decline of unions has contributed to rising wage inequality.\footnote{See, among others, \citet{FreemanMedoff1984,DiNardoJohn1996,WesternBruce2011,Farber2018}.} 
+The evidence here is more narrowly focused on the marginal effect of recent RTW adoptions in five states between 2012 and 2017, holding fixed the broader institutional environment. 
+Within that margin, RTW adoption sharply reduces unionization but does not generate correspondingly large increases in measured wage dispersion, at least over the time horizon captured by the CPS data.
+
+The pattern of results is consistent with several mechanisms. 
+First, the fact that RTW lowers both membership and coverage, with little change in free-riding, suggests that the dominant channel is a contraction in the incidence of unionized workplaces rather than a dramatic shift in the composition of workers inside those workplaces. 
+Second, unions may already have been too weak in many of the newly adopting states for additional RTW-induced declines to translate into sizeable changes in bargaining outcomes, especially against the backdrop of national forces affecting wages. 
+Third, firms and workers may adjust along non-wage margins—such as benefits, hours, or job security—that are not fully captured by the CPS wage measure.
+
+At the same time, the results highlight that RTW can generate modest wage losses that are broadly shared rather than tightly concentrated at the bottom of the distribution. 
+The RIF-based estimates show similar, small effects across the 10th, 50th, and 90th percentiles, implying little change in standard inequality measures. 
+In this sense, RTW laws in the recent period appear to operate mainly as a level shift to pay rather than as a mechanism that reshapes the wage structure.
+
+Finally, several limitations should temper the interpretation of these findings. 
+The identification strategy relies on parallel trends and no-anticipation assumptions, which are supported by the flat pre-treatment event-study coefficients but cannot be tested directly. 
+The estimates are also based on a relatively small set of adopting states, so they speak most directly to the marginal effect of RTW expansions in the 2010s rather than to earlier episodes or to potential future adoptions in very different institutional environments. 
+Moreover, the analysis focuses on hourly wages and does not capture potential effects on employment, hours, non-wage benefits, or firm-level outcomes. 
+These caveats notwithstanding, the evidence indicates that, in recent experience, RTW laws are best characterized as policies that substantially weaken unions while exerting modest and fairly uniform downward pressure on wages.
+
+

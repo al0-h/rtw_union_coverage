@@ -1,0 +1,191 @@
+#############################
+# 1_Gen_Dataframe.jl
+#
+# Replication script for Sun–Abraham IW event study in Julia
+# Repo layout (relative to project root):
+#   intm/RTW_Analysis.dta     # Stata source data
+#   data/RTW_Analysis.arrow   # generated Arrow (written by this script)
+#   code/1_Gen_Dataframe.jl   # this file
+#############################
+
+using ReadStatTables, DataFrames, Arrow
+using EventStudyInteracts, FixedEffectModels, Vcov
+using StatsModels: term, DummyCoding
+using CategoricalArrays
+using LinearAlgebra
+using Base.Threads
+using FixedEffectModels: fe
+
+# Avoid BLAS spawning its own threads on top of Julia's
+BLAS.set_num_threads(1)
+
+# ------------------------------------------------------------------
+# 1. Paths based on this file's location (repo can live anywhere)
+# ------------------------------------------------------------------
+
+# ROOT_DIR = .../rtw_union_power
+const ROOT_DIR = normpath(joinpath(@__DIR__, ".."))
+
+const DATA_DIR = joinpath(ROOT_DIR, "data")
+const INTM_DIR = joinpath(ROOT_DIR, "intm")
+
+const DTA_PATH   = joinpath(INTM_DIR,  "RTW_Analysis.dta")
+const ARROW_PATH = joinpath(DATA_DIR, "RTW_Analysis.arrow")
+
+# Ensure data/ exists for the Arrow file
+isdir(DATA_DIR) || mkpath(DATA_DIR)
+
+# ------------------------------------------------------------------
+# 2. Load data (prefer Arrow; fall back to Stata .dta and create Arrow)
+# ------------------------------------------------------------------
+
+df = if isfile(ARROW_PATH)
+    # Fast path: Arrow → DataFrame
+    ARROW_PATH |> Arrow.Table |> DataFrame
+else
+    # First-time path: Stata → DataFrame → write Arrow in data/
+    DTA_PATH |> readstat |> DataFrame |> df -> begin
+        Arrow.write(ARROW_PATH, df)
+        df
+    end
+end
+
+# ------------------------------------------------------------------
+# 3. Sample restriction (mirror Stata keep/drop)
+#    keep if inrange(year,2003,2019)
+#    drop if alwaystreat == 1
+# ------------------------------------------------------------------
+
+df = df |> df -> subset(
+    df,
+    :year        => ByRow(y -> 2003 <= y <= 2019),
+    :alwaystreat => ByRow(a -> a != 1);
+    skipmissing  = true,
+)
+
+# ------------------------------------------------------------------
+# 4. Cohort + relative time (csdid-style g_rtw: 0 = never treated)
+# ------------------------------------------------------------------
+
+# csdid convention: g_rtw == 0 for never treated
+df.g_rtw = replace(df.g_rtw, 0 => missing)
+
+# Relative time: year - first treatment year
+df.ry = df.year .- df.g_rtw
+
+# Control cohort: never treated
+df.never_rtw = ismissing.(df.g_rtw)
+
+control_cohort = :never_rtw
+cohort         = :g_rtw
+vcov           = Vcov.cluster(:state)  # cluster(state) in Stata
+
+# ------------------------------------------------------------------
+# 5. Relative-time dummies (window [-10, 10]) in vectorized style
+# ------------------------------------------------------------------
+
+min_k, max_k = -10, 10
+
+neg_cols = Dict(
+    Symbol("g_$(abs(k))") => Int.(coalesce.(df.ry .== k, false))
+    for k in min_k:-1
+)
+
+pos_cols = Dict(
+    Symbol("g$(k)") => Int.(coalesce.(df.ry .== k, false))
+    for k in 0:max_k
+)
+
+# Add all g_* columns at once
+df = hcat(df, DataFrame(merge(neg_cols, pos_cols)))
+
+# rel_varlist = [:g_10, :g_9, ..., :g_2, :g0, :g1, ..., :g10]
+rel_varlist = vcat(
+    [Symbol("g_$(k)") for k in max_k:-1:2],
+    [Symbol("g$(k)")  for k in 0:max_k],
+)
+
+# ------------------------------------------------------------------
+# 6. Covariates & contrasts (full model, like your main csdid spec)
+# ------------------------------------------------------------------
+
+# Factor / categorical variables
+df.ed4   = categorical(df.ed4)
+df.black = categorical(df.black)
+df.hisp  = categorical(df.hisp)
+df.msa   = categorical(df.msa)
+
+# pexp^2
+df.pexp2 = df.pexp .^ 2
+
+# Categorical contrasts
+contrasts = Dict(
+    :ed4   => DummyCoding(),
+    :black => DummyCoding(),
+    :hisp  => DummyCoding(),
+    :msa   => DummyCoding(),
+)
+
+absorb = [:state, :year]
+
+# Build formula programmatically
+function full_formula(outcome::Symbol)
+    term(outcome) ~
+        term(:ed4) + term(:pexp) + term(:pexp2) +
+        term(:black) + term(:hisp) + term(:msa) +
+        sum(fe.(term.(absorb)))
+end
+
+weights = :earnwt
+
+# ------------------------------------------------------------------
+# 7. Wrapper to run one full-spec eventreg (parallel-ready)
+# ------------------------------------------------------------------
+
+function run_full_model(df::DataFrame, outcome::Symbol;
+                        method::Symbol = :cpu,
+                        nthreads::Int  = Threads.nthreads())
+    f = full_formula(outcome)
+
+    eventreg(df, f,
+             rel_varlist,
+             control_cohort,
+             cohort,
+             vcov;
+             contrasts        = contrasts,
+             weights          = weights,
+             method           = method,          # :cpu or :gpu
+             nthreads         = nthreads,
+             save             = :none,
+             double_precision = true,
+             tol              = 1e-8,
+             maxiter          = 10_000,
+             drop_singletons  = true,
+             progress_bar     = true,
+             dof_add          = 0,
+             subset           = nothing)
+end
+
+# ------------------------------------------------------------------
+# 8. Run models for all outcomes (your 5 main outcomes)
+# ------------------------------------------------------------------
+
+outcomes = [:covered, :member, :frider, :lnwage, :gap_p90_p10]
+
+# Use internal multi-threading via FixedEffectModels
+full_models = Dict{Symbol,Any}(
+    y => run_full_model(df, y; method = :cpu, nthreads = Threads.nthreads())
+    for y in outcomes
+)
+
+# (Optional: GPU example if CUDA is set up for the replicator)
+# using CUDA
+# @assert CUDA.functional()
+# full_models_gpu = Dict{Symbol,Any}(
+#     y => run_full_model(df, y; method = :gpu, nthreads = 1, double_precision = false)
+#     for y in outcomes
+# )
+
+#############################
+# End of file
+#############################

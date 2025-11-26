@@ -1,0 +1,211 @@
+import os
+import pandas as pd
+
+from pathlib import Path
+from ipumspy import IpumsApiClient, MicrodataExtract, readers
+
+# -----------------------------------------------------------
+# 0. Set up API client
+# -----------------------------------------------------------
+
+## Put your API key at .env for more on IPUMS CPS API you can go at  https://developer.ipums.org/docs/v1/workflows/create_extracts/cps/
+
+API_KEY = os.getenv("IPUMS_MICRODATA_API_KEY")
+
+if not API_KEY:
+    raise RuntimeError("Set IPUMS_MICRODATA_API_KEY env var before running this script. Visit https://developer.ipums.org/docs/v1/workflows/create_extracts/cps/ for more information.")
+
+ipums = IpumsApiClient(API_KEY)
+
+
+# -----------------------------------------------------------
+# 1. Programmatically get the CPS sample IDs we want
+#    - Monthly CPS: Jan 2003 – Dec 2019
+# -----------------------------------------------------------
+
+def get_rtw_sample_ids(sample_info):
+    """
+    sample_info: dict {sample_id: description}, e.g.
+      {'cps2003_01s': 'IPUMS-CPS, January 2003', ...}
+
+    We want: only basic monthly CPS, years 2003–2019 inclusive.
+    """
+    months = {
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    }
+
+    selected_ids = []
+
+    for sample_id, desc in sample_info.items():
+        if not isinstance(desc, str):
+            continue
+        if not desc.startswith("IPUMS-CPS,"):
+            continue
+
+        tail = desc.split(",", 1)[1].strip()   
+        parts = tail.split()
+        if len(parts) < 2:
+            continue
+
+        tag = parts[0]                       
+        try:
+            year = int(parts[-1])
+        except ValueError:
+            continue
+
+        if 2003 <= year <= 2019 and tag in months:
+            selected_ids.append(sample_id)
+
+    return sorted(set(selected_ids))
+
+
+
+# Grab CPS sample metadata via ipumspy helper (v0.7.0+)
+# Returns dict: {sample_id: description}
+sample_info = ipums.get_all_sample_info("cps")
+
+rtw_samples = get_rtw_sample_ids(sample_info)
+print(f"Number of CPS samples in this extract: {len(rtw_samples)}")
+# This should be 204.
+
+# -----------------------------------------------------------
+# 2. Variables
+# -----------------------------------------------------------
+variables = [
+    # Household-level (H)
+    "YEAR",       # survey year
+    "SERIAL",     # household serial number
+    "MONTH",      # month
+    "HWTFINL",    # household weight, basic monthly
+    "CPSID",      # CPS household ID
+    "STATEFIP",   # state FIPS
+    "METAREA",    # metropolitan area
+    "METRO",      # metro / central city status
+
+    # Person-level (P)
+    "PERNUM",
+    "WTFINL",     # final basic person weight
+    "CPSIDP",     # CPS person ID
+    "CPSIDV",     # validated longitudinal ID
+    "AGE",
+    "SEX",
+    "RACE",
+    "MARST",
+    "HISPAN",
+
+    # Labor market & job
+    "EMPSTAT",
+    "OCC",
+    "OCC2010",
+    "IND",
+    "CLASSWKR",
+    "WKSTAT",
+    "EDUC",
+    "SCHLCOLL",
+    "EARNWT",
+    "JTYEARS",
+    "JTSUPPWT",
+
+    # ORG earnings & union
+    "HOURWAGE",
+    "PAIDHOUR",
+    "UNION",
+    "EARNWEEK",
+    "UHRSWORKORG",
+    "ELIGORG",
+]
+
+# -----------------------------------------------------------
+# 3. Define CPS extract, submit, wait, download
+# -----------------------------------------------------------
+
+description = "RTW CPS 2003-2019 monthly (wages/union/tenure/benefits)"
+
+rtw_extract = MicrodataExtract(
+    collection="cps",
+    samples=rtw_samples,
+    variables=variables,
+    description=description,
+    data_format="fixed_width",      # ipumspy currently doesn't allow for stata output
+    data_structure={"rectangular": {"on": "P"}},
+    data_quality_flags=True,  
+)
+
+# Submit to IPUMS extract system
+ipums.submit_extract(rtw_extract)
+print(f"{rtw_extract.collection} extract number {rtw_extract.extract_id} submitted…")
+
+# Block until IPUMS marks it complete
+ipums.wait_for_extract(rtw_extract)
+print(f"{rtw_extract.collection} extract number {rtw_extract.extract_id} is complete!")
+
+# Download all files to current dir
+data_dir = Path("data")
+print("==> downloading into:", data_dir.resolve()) 
+ipums.download_extract(rtw_extract, download_dir=data_dir)
+print("==> download complete")
+
+# -----------------------------------------------------------
+# 4. Read into pandas (using the DDI + .xml data )
+# -----------------------------------------------------------
+# IPUMS always gives .xml metadata and zipped .dz, not .dta,
+# For a more robust replication I opted to process this large data extract
+# in chucks so then we just merge it all together at the end 
+# First few times I did this without partitioning my Python crashed.
+
+fname = f"{rtw_extract.collection}_{str(rtw_extract.extract_id).zfill(5)}"
+
+xml_files = list(data_dir.glob("cps_*.xml"))
+if not xml_files:
+    raise FileNotFoundError(f"No cps_*.xml found in {data_dir}")
+elif len(xml_files) > 1:
+    print("Warning: multiple cps_*.xml files found, using the first one:")
+    print(xml_files)
+
+ddi_path = xml_files[0]
+base = ddi_path.stem         
+dat_path = data_dir / f"{base}.dat.gz"
+if not dat_path.exists():
+    dat_path = data_dir / f"{base}.dat"  
+
+print("DDI:", ddi_path)
+print("DAT:", dat_path)
+
+ddi = readers.read_ipums_ddi(ddi_path)
+
+
+# -----------------------------------------------------------
+# 2. Read in chunks and write per-chunk .dta files
+# -----------------------------------------------------------
+
+chunksize = 200_000     # Adjust this number based on your computer memory
+iter_micro = readers.read_microdata_chunked(
+    ddi,
+    filename=dat_path,
+    chunksize=chunksize,
+)
+
+part = 0
+for df_chunk in iter_micro:
+    part += 1
+    print(f"Processing chunk {part}...")
+
+    # Select variables and optionally filter
+    # (keep only vars that are actually present)
+    present_vars = [v for v in keep_vars if v in df_chunk.columns]
+    sub = df_chunk[present_vars].copy()
+
+    # Optional filter
+    sub = filter_chunk(sub)
+
+    if sub.empty:
+        print(f"  chunk {part}: no rows after filtering, skipping")
+        continue
+
+    out_path = data_dir / f"cps_rtw_2003_2019_part{part:02d}.dta"
+    sub.to_stata(out_path, write_index=False, version=118)
+    print(f"  wrote {out_path}")
+
+Path("../data/ipums_done.flag").touch()
+print("Created data/ipums_done.flag")

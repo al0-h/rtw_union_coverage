@@ -1,40 +1,53 @@
-\section{Methodology}
-\subsection{Review of Callaway–Sant’Anna Estimator}
+% !TEX root = ../Draft.tex
+\section{Data}\label{sec:data}
+
+We use microdata from the Integrated Public Use Microdata Series Current Population Survey (IPUMS CPS; \citet{ipumsCPS2025}). 
+IPUMS CPS harmonizes the monthly CPS over time and provides consistent coding and documentation for key labor‑market variables, which is crucial for pooling many years of data and constructing comparable measures of wages, union status, and worker characteristics. 
 
 
+Our extract consists of the basic monthly CPS from January 2003 through December 2019. 
+The starting year is chosen for three reasons. 
+First, 2003 marks the introduction of a consistent post‑2000 CPS industry and occupation coding scheme, so beginning the sample then avoids having to splice together different coding systems when defining high‑union industries and occupation groups.\footnote{In earlier years the CPS uses different industry and occupation classifications. Bridging those schemes would introduce additional measurement error in industry‑level unionization and occupation controls without adding new RTW adoptions in our identification period.} 
+Second, the main wave of new RTW laws in our period occurs between 2012 and 2017. 
+Starting in 2003 provides a long pre‑treatment window (up to nine years) for the earliest adopters while keeping a relatively homogeneous institutional and data environment. 
+Third, we end the sample in 2019 to keep the analysis in the pre‑pandemic labor market, avoiding the large and uneven labor‑market disruptions of 2020–2021 that are orthogonal to RTW but would complicate interpretation of dynamic effects. 
+Oklahoma adopted RTW in 2001, just before our sample begins, because exploiting that adoption would require extending the CPS series back across earlier coding regimes for industry and occupation, we treat Oklahoma as an always‑RTW state in our analysis.
+
+From each month we keep individuals aged 18–64, employed in the survey week, and classified as private or public wage and salary workers in the ORG earnings universe. 
+The extract includes the standard CPS identifiers and weights, state of residence, basic demographics (age, sex, race, Hispanic origin, marital status, education), and labor‑market information (employment status, hours, class of worker, industry and occupation, union status, and hourly wages). 
+All statistics and regressions use the appropriate IPUMS CPS person or earnings weights.
+The unit of observation in our dataset is an individual worker in a given calendar year. 
+We pool the monthly CPS ORG samples within each year and treat the data as a repeated cross-section of worker–year observations; we do not attempt to follow individuals over time. 
+Right-to-work status varies at the state–year level and is merged to each worker based on state of residence and survey year.
+
+Union status comes from the ORG union question. 
+We classify workers as union members, non‑members covered by a union contract (“free riders”), and not covered by any union. 
+From this we form indicators for union membership and for union coverage (member or covered). 
+To capture long‑run differences in unionization across industries, we compute industry‑level union coverage using the early part of the sample and define a high‑union‑industry dummy for industries above the median coverage rate.
+
+Right‑to‑work (RTW) status is obtained by merging a state–month panel of RTW laws to the CPS microdata. 
+We code a monthly RTW indicator equal to one when a law is in force, and then define a state–year indicator that equals one if RTW is in effect for at least six months of the calendar year. 
+From this panel we identify the year in which each state first becomes RTW and use it to classify states into never‑RTW, always‑RTW, and “new adopters’’; for the latter group we distinguish pre‑ and post‑adoption periods in the analysis.
+
+Education is measured using the detailed IPUMS education codes and grouped into four categories: high school or less, some college but no bachelors, bachelors, and graduate or professional degree. 
+We map these categories into years of schooling and construct potential experience as age minus schooling minus six, truncating at zero, and include a quartic in potential experience to be used as part of a Mincer earnings equation. 
+Occupations are grouped into eight broad categories (management/business/finance, professional, service, sales, office and administrative support, construction and extraction, production, and transportation and material moving), plus an “unknown’’ category, and we include the corresponding occupation dummies. 
+We also construct an indicator for residence in a metropolitan area (MSA) using the CPS \texttt{METRO} and \texttt{METAREA} variables, setting the MSA indicator to one if a respondent is coded as living in a metropolitan or central‑city area (or has a positive metropolitan area code) and zero otherwise, and include a separate dummy for missing MSA information.
 
 
-%   Briefly describe ATT(g,t), comparison groups, assumptions
-[[Introduce CS DiD and the challenges it addresses from the TWFE ]]
-
-* Issues with heterogeneity in the treatment which CS did solves 
-
-I exploit the staggered timing of state Right-to-Work (RTW) adoptions in a modern difference-in-differences framework (Callaway \& Sant'Anna) to estimate cohort and time-specific average treatment effects (ATTs).
-First, I estimate the RTW impact on union membership (first stage) and on outcomes. 
-I then form Wald-style instrumental-variables estimates—dividing the reduced-form RTW effects by the RTW-induced change in unionization—to recover the causal effect of unions for “complier” states. 
-
-[[Explain the Wald ratio and method to estimate the SEs]]
-% Delta method for now until I can find something better seems like the standard.
-
-
-
-%   Explain how it’s typically applied (with continuous or linear models)
-[[Explain how it is applied to linear and cont models]]
-
-\subsection{Alternative Estimation: Syn Staggared Diff-in-Diff}
-[[ONLY IF: the binary outcome isnt done and I have room]]
-\subsection{IF DONE: Binary Outcome Challenges and Proposed Extension}
-%   Define the estimand: ATT(g,t) for binary Y in {0,1}
-[[Explain the new estimator]]
-
-%   Discuss LPM limitations: heteroskedasticity, probability bounds
-[[Discuss assumptions and limitations]]
-
-%   Describe your solution: e.g., marginal effects from logistic regression
-
-%   Inference strategy (e.g., bootstrapped CIs)
-
-%   How it respects staggered adoption structure
-[[explain how it keeps the staggered adoption structure]]
+\begin{table}[h]
+   \caption{Summary Statistics}
+    \centering
+\vspace{0.3em}\resizebox{\textwidth}{!}{
+\input{Tables/table1_sumstats.tex}
+    \label{table: Sum Stats RTW}
+}
+\begin{tablenotes}
+    This table reports weighted means and standard deviations (in parentheses) of the listed variables for the full sample  and separately by right-to-work (RTW) status: Never RTW, New RTW (pre), New RTW (post), and Always RTW. 
+    All statistics are computed using earnings weights. 
+    For each variable, the \emph{p}-value in column (6) comes from a weighted regression of the variable on an indicator for “New RTW (pre)” using only observations in the “Never RTW” and “New RTW (pre)” groups; it thus tests equality of means between columns (2) and (3). 
+    The number of observations in each column is shown in the last row. 
+\end{tablenotes}
+\end{table}
 
 
