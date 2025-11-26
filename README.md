@@ -57,7 +57,7 @@ make demo            # builds a 100-row sample and runs a toy DiD
 make clean           # removes temp files
 
 ## Step-by-Step Replication Guide
-
+```bash
 git clone https://github.com/al0-h/rtw_union_power.git
 cd rtw_union_power
 
