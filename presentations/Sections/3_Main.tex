@@ -4,37 +4,37 @@
 \subsection{Setup and notation}
 
 The unit of observation is an individual CPS ORG worker in a given survey month. 
-We pool monthly IPUMS CPS ORG samples from 2003–2019 and treat the data as a repeated cross-section. 
+I pool monthly IPUMS CPS ORG samples from 2003–2019 and treat the data as a repeated cross-section. 
 Let $Y_{ist}$ denote the outcome for worker $i$ living in state $s$ in calendar year $t$. 
 In different specifications, $Y_{ist}$ is union coverage, union membership, a free-rider indicator, or log hourly wages. 
 Right-to-work status varies at the state–year level. 
-Let $D_{st}$ be an indicator equal to one if state $s$ has a RTW law in force in year $t$ (defined below), and zero otherwise. For states that adopt RTW during the sample period, let $G_s$ denote the first year in which $D_{st}=1$; for never-adopting states we set $G_s=0$. 
+Let $D_{st}$ be an indicator equal to one if state $s$ has a RTW law in force in year $t$ (defined below), and zero otherwise. For states that adopt RTW during the sample period, let $G_s$ denote the first year in which $D_{st}=1$; for never-adopting states I set $G_s=0$. 
 Our main estimands are the cohort- and event-time specific average treatment effects on the treated, $\text{ATT}(g,t)$, and averages of these effects over post-adoption periods.
 
 \subsection{Treatment timing and groups}
 
-We construct a state–month panel of RTW status and merge it to the CPS file by state and calendar month. 
+I construct a state–month panel of RTW status and merge it to the CPS file by state and calendar month. 
 The monthly RTW indicator equals one beginning in the month when a state's RTW statute becomes effective. 
-For the empirical analysis, we aggregate this information to the annual level: $D_{st}=1$ if RTW is in force for at least six months of year $t$ in state $s$, and $D_{st}=0$ otherwise. 
+For the empirical analysis, I aggregate this information to the annual level: $D_{st}=1$ if RTW is in force for at least six months of year $t$ in state $s$, and $D_{st}=0$ otherwise. 
 The first year with $D_{st}=1$ defines the cohort $G_s$ for each adopting state. 
 States that have RTW in place before 2003 are treated as RTW throughout our sample window and serve as always-treated; states that never adopt RTW by 2019 are never-treated. 
 States that switch from $D_{st}=0$ to $D_{st}=1$ between 2003 and 2019 are “new adopters’’ and provide the variation in treatment timing used by the estimator. 
-In the event-study graphs we index time relative to adoption, using a symmetric window of five leads and five lags around the year before adoption (event time $-1$) as the omitted baseline.
+In the event-study graphs I index time relative to adoption, using a symmetric window of five leads and five lags around the year before adoption (event time $-1$) as the omitted baseline.
 %% More about different windows in the appendix section
 
 \subsection{Difference-in-differences design}
 
 Identification relies on the standard parallel-trends assumption for staggered adoption: for each cohort $g$, the evolution of untreated potential outcomes for workers in adopting states would have followed that of the comparison states in the absence of RTW. 
-We implement the Callaway and Sant'Anna (2021) difference-in-differences estimator for multiple periods and variation in treatment timing. 
-Time is indexed by calendar year, the cohort variable is $G_s$, and we use the doubly-robust inverse-probability weighting estimator (\texttt{method(dripw)}). 
+I implement the Callaway and Sant'Anna (2021) difference-in-differences estimator for multiple periods and variation in treatment timing. 
+Time is indexed by calendar year, the cohort variable is $G_s$, and I use the doubly-robust inverse-probability weighting estimator (\texttt{method(dripw)}). 
 Observations are weighted by the CPS earnings weight and standard errors are clustered at the state level. 
-For each outcome $Y_{ist}$ we report (i) event-study coefficients, which plot $\text{ATT}(g,t)$ aggregated across cohorts by event time, and (ii) average post-adoption effects that aggregate the cohort- and time-specific ATTs over post-treatment years.
+For each outcome $Y_{ist}$ I report (i) event-study coefficients, which plot $\text{ATT}(g,t)$ aggregated across cohorts by event time, and (ii) average post-adoption effects that aggregate the cohort- and time-specific ATTs over post-treatment years.
 
 \subsection{Baseline specification and controls}
-In all specifications we condition on a common set of worker characteristics. 
+In all specifications I condition on a common set of worker characteristics. 
 Let $X_{ist}$ denote a vector of controls including a quadratic in potential experience (constructed from age and education), dummies for four education groups, indicators for female, race and Hispanic origin, eight broad occupation groups (plus an “unknown’’ category), public-sector employment, and metropolitan residence. 
 These controls absorb systematic differences in wages and union status across observable worker types and help stabilize the estimation of propensity scores in the doubly robust procedure. 
-We use the same control set for all outcomes (union coverage, union membership, free riding, and log hourly wages), and we always apply the CPS earnings weight and cluster standard errors at the state level, as described above.
+I use the same control set for all outcomes (union coverage, union membership, free riding, and log hourly wages), and I always apply the CPS earnings weight and cluster standard errors at the state level, as described above.
 
 
 Our object of interest is the cohort- and period-specific average treatment effect on the treated (ATT) defined by \citep{CallawaySantAnna2021}. 
@@ -47,11 +47,11 @@ For a given adopting cohort $g$ and year $t \ge g$, the ATT is
 G_s = g,\; t \ge g \big],
 \end{equation}
 where $Y_{ist}(1)$ and $Y_{ist}(0)$ are potential outcomes with and without RTW. 
-Under the parallel-trends and overlap assumptions in \citet{CallawaySantAnna2021}, we can identify $\text{ATT}(g,t)$ by comparing workers in states that adopt RTW in year $g$ to workers in states that are not yet treated (plus never-treated states) in the same year.
+Under the parallel-trends and overlap assumptions in \citet{CallawaySantAnna2021}, I can identify $\text{ATT}(g,t)$ by comparing workers in states that adopt RTW in year $g$ to workers in states that are not yet treated (plus never-treated states) in the same year.
 
-We estimate \eqref{eq:att} using the doubly robust difference-in-differences estimator implemented in the \texttt{csdid} command, with calendar year as the time index and $G_s$ as the treatment cohort. 
+I estimate \eqref{eq:att} using the doubly robust difference-in-differences estimator implemented in the \texttt{csdid} command, with calendar year as the time index and $G_s$ as the treatment cohort. 
 The estimator combines propensity-score weighting and outcome regression to construct a counterfactual for each treated cohort-year and then recovers $\widehat{\text{ATT}}(g,t)$ for all $g$ and $t$. 
-To summarize the dynamics, we aggregate these cohort-specific effects by event time $k=t-g$ and report
+To summarize the dynamics, I aggregate these cohort-specific effects by event time $k=t-g$ and report
 \begin{equation}
 \label{eq:event}
 \delta_k
@@ -65,25 +65,25 @@ The vector of worker characteristics $X_{ist}$ that enters the doubly robust adj
 
 \subsection{Alternative estimator and robustness}
 Our baseline estimates rely on the group–time difference‑in‑differences framework of \citet{CallawaySantAnna2021}, implemented with the doubly robust estimator. 
-This approach is convenient in our setting because it delivers cohort–time average treatment effects that can be aggregated into overall post‑adoption effects and used consistently across the various outcomes we study, including RIF‑based measures of wage quantiles and subsamples defined by industry unionization. 
-As a robustness check, we also estimate dynamic effects using the interaction‑weighted event‑study estimator of \citet{SunAbraham2021}, which likewise corrects the weighting problems of two‑way fixed‑effects models with staggered adoption. 
+This approach is convenient in our setting because it delivers cohort–time average treatment effects that can be aggregated into overall post‑adoption effects and used consistently across the various outcomes I study, including RIF‑based measures of wage quantiles and subsamples defined by industry unionization. 
+As a robustness check, I also estimate dynamic effects using the interaction‑weighted event‑study estimator of \citet{SunAbraham2021}, which likewise corrects the weighting problems of two‑way fixed‑effects models with staggered adoption. 
 
-Appendix Figure A shows that the Sun–Abraham event‑study profiles are very similar to our baseline csdid estimates for unionization and wages, so we focus on the Callaway–Sant’Anna results in the main text.
+Appendix Figure A shows that the Sun–Abraham event‑study profiles are very similar to our baseline csdid estimates for unionization and wages, so I focus on the Callaway–Sant’Anna results in the main text.
 
 %[[test]] 
 \subsection{Distributional effects via RIF regressions}
 
-Beyond average wage effects, we also study how RTW laws affect different parts of the wage distribution. 
-Following \citet{FirpoSergio2009}, we use recentered influence function (RIF) regressions for unconditional quantiles of log hourly wages. For a given unconditional quantile $\tau$ of $\ln(\text{wage})$, we construct the RIF of log wages at $\tau$ and treat this transformed variable as the outcome in the same difference-in-differences design described above. 
+Beyond average wage effects, I also study how RTW laws affect different parts of the wage distribution. 
+Following \citet{FirpoSergio2009}, I use recentered influence function (RIF) regressions for unconditional quantiles of log hourly wages. For a given unconditional quantile $\tau$ of $\ln(\text{wage})$, I construct the RIF of log wages at $\tau$ and treat this transformed variable as the outcome in the same difference-in-differences design described above. 
 The resulting coefficients can be interpreted as changes in the unconditional $\tau$th quantile of log wages.
 
-Operationally, we estimate separate Callaway--Sant'Anna DID specifications with the RIF of log hourly wages as the dependent variable at several quantiles (e.g.\ the 10th, 25th, 50th, 75th, and 90th unconditional quantiles). 
-We keep the same sample, weighting scheme, and set of controls as in the baseline mean-wage specification, and continue to cluster standard errors by state. 
-In the results section, we summarize these estimates by plotting the ATT on log wages across quantiles, which shows how RTW affects the wage distribution rather than only the mean.%
+Operationally, I estimate separate Callaway--Sant'Anna DID specifications with the RIF of log hourly wages as the dependent variable at several quantiles (e.g.\ the 10th, 25th, 50th, 75th, and 90th unconditional quantiles). 
+I keep the same sample, weighting scheme, and set of controls as in the baseline mean-wage specification, and continue to cluster standard errors by state. 
+In the results section, I summarize these estimates by plotting the ATT on log wages across quantiles, which shows how RTW affects the wage distribution rather than only the mean.%
 
 \subsection{Heterogeneity by industry unionization}
 
-We also examine whether RTW effects differ between more and less unionized industries. Using the pre-period CPS data, we compute industry-level union coverage rates (weighted by earnings weights) and define a high-union-industry indicator equal to one for industries with coverage above the median and zero otherwise. This industry measure is merged back to the full worker sample. To study heterogeneity, we re-estimate the baseline CSDID specifications separately for workers in high- and low-union industries, focusing on union outcomes and log wages. Comparing the resulting event-study profiles and average effects across these two subsamples allows us to assess whether RTW laws have stronger impacts in segments of the labor market where unions were initially more prevalent.
+I also examine whether RTW effects differ between more and less unionized industries. Using the pre-period CPS data, I compute industry-level union coverage rates (weighted by earnings weights) and define a high-union-industry indicator equal to one for industries with coverage above the median and zero otherwise. This industry measure is merged back to the full worker sample. To study heterogeneity, I re-estimate the baseline CSDID specifications separately for workers in high- and low-union industries, focusing on union outcomes and log wages. Comparing the resulting event-study profiles and average effects across these two subsamples allows us to assess whether RTW laws have stronger impacts in segments of the labor market where unions were initially more prevalent.
 
 
 \section{Empirical Results} \label{sec:results}
