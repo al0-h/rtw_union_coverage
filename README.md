@@ -9,14 +9,10 @@
 ## Table of Contents
 1. [Overview](#overview)  
 2. [Folder Structure](#folder-structure)  
-3. [Prerequisites](#prerequisites)  
-4. [Quick Start](#quick-start)  
-5. [Step-by-Step Replication Guide](#step-by-step-replication-guide)  
-6. [Expected Output](#expected-output)  
-7. [Troubleshooting](#troubleshooting)  
-8. [Citation](#citation)  
-9. [Contact](#contact)  
-10. [License](#license)  
+3. [Quick Start](#quick-start)  
+4. [Citation](#citation)  
+5. [Contact](#contact)  
+6. [License](#license)  
 
 ---
 
@@ -34,10 +30,10 @@ The replication package:
 ```
 ├── Code/            # Replication .do files
 │   ├── _Archive  # Stores older code
+│   ├── ...       # Scripts Generating Figures and Tables
 │   └── Logs/     # Keeps logs of code
 ├── Data/                  # Raw data; empty; .gitignored
-│   ├── CPS_ORG_Data/
-│   └── CPS_ORG_dta/
+│   └── CPS_Extract/
 ├── Intm/                  # Processed data
 ├── Presentations/
 │  ├── _Archive/              # Previous versions
@@ -48,14 +44,10 @@ The replication package:
 │  ├── Sections/
 │  └── Tables/
 ├── LICENSE.txt
+├── .gitignore
 ├── README.txt
 └── README.md              # This file
 ```
-
-## Prerequisites
-* Stata/SE or MP 18  (earlier versions ≥16 may work)
-* R $\geq$ 4.2 with tidyverse (only for optional plots)
-*  GNU Make (or run .do files manually)
 
 ## Quick Start
 
@@ -65,16 +57,18 @@ make demo            # builds a 100-row sample and runs a toy DiD
 make clean           # removes temp files
 
 ## Step-by-Step Replication Guide
-1. Place RTW_Years.xlsx in the data folder
-2. In Stata, run Code/00_Master.do. If you only want to run some parts comment out the line including that do file.
-Logs are saved to Code/Logs/.
+```bash
+git clone https://github.com/al0-h/rtw_union_power.git
+cd rtw_union_power
 
-## Expected Output
+# 1) Create your local env file with your own IPUMS key you can get it here https://developer.ipums.org/docs/v1/workflows/create_extracts/cps/
+cp .env.example .env
+# then open .env and set:
+# IPUMS_MICRODATA_API_KEY=your_own_ipums_key_here
 
-| Script                | Output                         | Where saved                           |
-| --------------------- | ------------------------------ | ------------------------------------- |
-| 03b\_TWFE\_HetT10.do  | TWFE estimates of High Union Share Industries      | Presentations/Tables/TWFE\_HetT10.pdf |
-| 03c\_CSDID\_HetT10.do | CSDID estimates of High Union Share Industries | Presentations/Figures/CSDID\_HetT10.pdf   |
+# 2) Run the full pipeline (Python -> Stata -> R)
+snakemake --cores 1
+```
 
 
 ## Troubleshooting (short FAQ)
@@ -83,7 +77,7 @@ Logs are saved to Code/Logs/.
 
 ## Citation 
 Leon-Hernandez, Alexander (2025).
-“Right-to-Work Laws, Union Decline, and Employer Power: Evidence from Staggered Reforms in U.S. Labor Markets.” Replication files, GitHub.
+"Right-to-Work, Union Coverage, and the Structure of Pay” Replication files, GitHub.
 
 ## Contact
 alexander.leon-hernandez@utexas.edu
