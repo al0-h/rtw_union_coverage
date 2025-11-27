@@ -27,20 +27,14 @@ The replication package:
 ## Folder Structure
 ```
 ├── Code/            # Replication .do files
-│   ├── _Archive  # Stores older code
-│   ├── ...       # Scripts Generating Figures and Tables
+│   ├── ...       # Scripts generating datasets, and all the figures and tables
 │   └── Logs/     # Keeps logs of code
 ├── Data/                  # Raw data; empty; .gitignored
 │   └── CPS_Extract/
 ├── Intm/                  # Processed data
 ├── Presentations/
-│  ├── _Archive/              # Previous versions
-│  ├── Bibliography/
 │  ├── Figures/               # Final figures (.pdf, .png)
-│  ├── Formatting/
-│  │  └── Formatting Ref/         # AEJ LaTeX reference
-│  ├── Sections/
-│  └── Tables/
+│  └── Tables/                # Final Tables (.tex)
 ├── LICENSE.txt
 ├── .gitignore
 ├── README.txt
