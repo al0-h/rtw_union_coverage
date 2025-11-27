@@ -46,6 +46,7 @@
 *.fot
 *.cb
 *.cb2
+*.tex
 .*.lb
 
 ## Intermediate documents:
