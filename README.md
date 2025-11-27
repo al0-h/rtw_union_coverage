@@ -8,10 +8,9 @@
 ## Table of Contents
 1. [Overview](#overview)  
 2. [Folder Structure](#folder-structure)  
-3. [Quick Start](#quick-start)  
-4. [Citation](#citation)  
-5. [Contact](#contact)  
-6. [License](#license)  
+3. [Citation](#citation)  
+4. [Contact](#contact)  
+5. [License](#license)  
 
 ---
 
@@ -47,13 +46,6 @@ The replication package:
 ├── README.txt
 └── README.md              # This file
 ```
-
-## Quick Start
-
-git clone https://github.com/al0-h/rtw_union_power.git
-cd rtw_union_power
-make demo            # builds a 100-row sample and runs a toy DiD
-make clean           # removes temp files
 
 ## Step-by-Step Replication Guide
 ```bash
