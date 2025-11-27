@@ -48,6 +48,8 @@
 *.cb2
 *.tex
 .*.lb
+*.loc
+*.bst
 
 ## Intermediate documents:
 *.dvi
