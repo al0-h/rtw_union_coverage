@@ -1,8 +1,7 @@
-# Right-to-Work Laws, Union Decline, and Employer Power  
-**Evidence from Staggered Reforms in U.S. Labor Markets**  
+# Right-to-Work, Union Coverage, and the Structure of Pay
 
 **Author:** Alexander Leon-Hernandez  
-**Replication Do Files** — *version dated 08 .06 .2025*  
+**Replication Do Files** — *version dated 11 .27 .2025*  
 
 ---
 
