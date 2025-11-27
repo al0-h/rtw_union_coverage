@@ -8,10 +8,9 @@
 ## Table of Contents
 1. [Overview](#overview)  
 2. [Folder Structure](#folder-structure)  
-3. [Quick Start](#quick-start)  
-4. [Citation](#citation)  
-5. [Contact](#contact)  
-6. [License](#license)  
+3. [Citation](#citation)  
+4. [Contact](#contact)  
+5. [License](#license)  
 
 ---
 
@@ -28,32 +27,19 @@ The replication package:
 ## Folder Structure
 ```
 ├── Code/            # Replication .do files
-│   ├── _Archive  # Stores older code
-│   ├── ...       # Scripts Generating Figures and Tables
+│   ├── ...       # Scripts generating datasets, and all the figures and tables
 │   └── Logs/     # Keeps logs of code
 ├── Data/                  # Raw data; empty; .gitignored
 │   └── CPS_Extract/
 ├── Intm/                  # Processed data
 ├── Presentations/
-│  ├── _Archive/              # Previous versions
-│  ├── Bibliography/
 │  ├── Figures/               # Final figures (.pdf, .png)
-│  ├── Formatting/
-│  │  └── Formatting Ref/         # AEJ LaTeX reference
-│  ├── Sections/
-│  └── Tables/
+│  └── Tables/                # Final Tables (.tex)
 ├── LICENSE.txt
 ├── .gitignore
 ├── README.txt
 └── README.md              # This file
 ```
-
-## Quick Start
-
-git clone https://github.com/al0-h/rtw_union_power.git
-cd rtw_union_power
-make demo            # builds a 100-row sample and runs a toy DiD
-make clean           # removes temp files
 
 ## Step-by-Step Replication Guide
 ```bash
