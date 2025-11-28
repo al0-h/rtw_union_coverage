@@ -7,10 +7,11 @@
 
 ## Table of Contents
 1. [Overview](#overview)  
-2. [Folder Structure](#folder-structure)  
-3. [Citation](#citation)  
-4. [Contact](#contact)  
-5. [License](#license)  
+2. [Folder Structure](#folder-structure)
+3. [Step-by-Step Replication Guide](#Step-by-Step-Replication-Guide)
+4. [Citation](#citation)  
+5. [Contact](#contact)  
+6. [License](#license)  
 
 ---
 
@@ -54,11 +55,6 @@ cp .env.example .env
 # 2) Run the full pipeline (Python -> Stata -> R)
 snakemake --cores 1
 ```
-
-
-## Troubleshooting (short FAQ)
-* “file RTW_Years.xlsx not found” → place RTW_Years.xlsx in Data/.
-* Make sure that if you you have csdid install by typing "ssc install csdid" in the Stata console
 
 ## Citation 
 Leon-Hernandez, Alexander (2025).
