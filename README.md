@@ -15,7 +15,7 @@
 ---
 
 ## Overview
-This repository contains all **Stata .do** scripts and auxiliary materials required to reproduce the empirical results in **“Right-to-Work Laws, Union Decline, and Employer Power: Evidence from Staggered Reforms in U.S. Labor Markets.”**  
+This repository contains all **Stata .do** scripts and auxiliary materials required to reproduce the empirical results in **Right-to-Work, Union Coverage, and the Structure of Pay**  
 The replication package:
 
 * Downloads and cleans the raw data sources.  
