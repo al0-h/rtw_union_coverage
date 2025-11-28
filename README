@@ -1,29 +1,23 @@
 ============================================================
-RIGHT-TO-WORK LAWS, UNION DECLINE, AND EMPLOYER POWER
-Evidence from Staggered Reforms in U.S. Labor Markets
-Replication Do-Files  •  version 2025-06-31
+Right-to-Work, Union Coverage, and the Structure of Pay
+Replication Do-Files  •  version 2025-11-27
 Author: Alexander León-Hernández
 ============================================================
 
 TABLE OF CONTENTS
   1. Overview
   2. Folder Structure
-  3. Prerequisites
-  4. Quick Start
-  5. Step-by-Step Replication Guide
-  6. Expected Output
-  7. Troubleshooting
-  8. Citation
-  9. Contact
- 10. License
+  3. Step-by-Step Replication Guide
+  4. Citation
+  5. Contact
+  6. License
 ------------------------------------------------------------
 
 1. OVERVIEW
    This package contains every Stata *.do* script and support file
    needed to reproduce the results in:
 
-     “Right-to-Work Laws, Union Decline, and Employer Power:
-      Evidence from Staggered Reforms in U.S. Labor Markets.”
+     “Right-to-Work, Union Coverage, and the Structure of Pay”
 
    • Downloads and cleans raw data
    • Builds analysis datasets
@@ -32,81 +26,51 @@ TABLE OF CONTENTS
 ------------------------------------------------------------
 2. FOLDER STRUCTURE
 
-  Code/                  replication .do files
-     |_Archive/          older code
-     | Logs/             Stata logs
-  Data/                  raw data  (empty – git-ignored)
-     | CPS_ORG_Data/
-     | CPS_ORG_dta/
-  Intm/                  processed data
-  Presentations/
-     |_Archive/          previous versions
-     | Bibliography/
-     | Figures/
-     | Formatting/
-     | Sections/
-     | Tables/
-  LICENSE.txt
-  README.txt  (this file)
-  README.md   Markdown version
+├── Code/            # Replication .do files
+│   ├── ...       # Scripts generating datasets, and all the figures and tables
+│   └── Logs/     # Keeps logs of code
+├── Data/                  # Raw data; empty; .gitignored
+│   └── CPS_Extract/
+├── Intm/                  # Processed data
+├── Presentations/
+│  ├── Figures/               # Final figures (.pdf, .png)
+│  └── Tables/                # Final Tables (.tex)
+├── LICENSE.txt
+├── .gitignore
+├── README.txt
+└── README.md              # This file
+
 
 ------------------------------------------------------------
-3. PREREQUISITES
+3. STEP-BY-STEP REPLICATION GUIDE
 
-  • Stata/SE or MP 18   (17/16 likely OK)
-  • R 4.2+ with tidyverse (optional plots)
-  • GNU Make  — or run .do files manually
+In the terminal environment run:
 
-------------------------------------------------------------
-4. QUICK START   (demo mode)
+git clone https://github.com/al0-h/rtw_union_power.git
+cd rtw_union_power
 
-  git clone https://github.com/al0-h/rtw_union_power.git
-  cd rtw_union_power
-  make demo      # builds a 100-row sample & runs toy DiD
-  make clean     # removes temp files
+# 1) Create your local env file with your own IPUMS key you can get it here https://developer.ipums.org/docs/v1/workflows/create_extracts/cps/
+cp .env.example .env
+# then open .env and set:
+# IPUMS_MICRODATA_API_KEY=your_own_ipums_key_here
 
-(Full CPS pipeline requires IPUMS extracts; see Section 5.)
-
-------------------------------------------------------------
-5. STEP-BY-STEP REPLICATION GUIDE
-
-  1. Copy RTW_Years.xlsx to Data/
-  2. In Stata:  do Code/00_Master.do
-     – Imports CPS, merges RTW dates, writes Intm/state_month_panel.dta
-  3. do 03b_TWFE_HetT10.do   → TWFE estimates
-  4. do 03c_CSDID_HetT10.do  → event-study plot
-  5. Logs saved to Code/Logs/
+# 2) Run the full pipeline (Python -> Stata -> R)
+snakemake --cores 1
 
 ------------------------------------------------------------
-6. EXPECTED OUTPUT
-
-  Script                Output                                Saved to
-  --------------------  ------------------------------------  -------------------------------
-  03b_TWFE_HetT10.do    TWFE estimates (high-union industries) Presentations/Tables/TWFE_HetT10.pdf
-  03c_CSDID_HetT10.do   CSDID ATT event study                 Presentations/Figures/CSDID_HetT10.pdf
-
-------------------------------------------------------------
-7. TROUBLESHOOTING
-
-  • “file RTW_Years.xlsx not found”  → place file in Data/
-  • csdid missing  →  in Stata:  ssc install csdid
-  • r(601) memory error  →  run Stata/MP or split years (see 01b script)
-
-------------------------------------------------------------
-8. CITATION
+4. CITATION
 
   León-Hernández, Alexander (2025).
-  “Right-to-Work Laws, Union Decline, and Employer Power:
-   Evidence from Staggered Reforms in U.S. Labor Markets.”
+  “Right-to-Work, Union Coverage, and the Structure of Pay”
   Replication files, GitHub repository.
 
 ------------------------------------------------------------
-9. CONTACT
+5. CONTACT
 
   alexander.leon-hernandez@utexas.edu
 
 ------------------------------------------------------------
-10. LICENSE
+6. LICENSE
 
   Released under the MIT License (see LICENSE.txt)
 ------------------------------------------------------------
