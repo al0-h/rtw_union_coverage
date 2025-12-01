@@ -1,21 +1,21 @@
 /****************************************************************************
-* SCRIPT   : 01b_Generate_dta.do 
+* SCRIPT   : 02b_Generate_dta.do 
 *
-* PURPOSE  : Extract BEA GDP and personal income by industryxstate for labor share
+* PURPOSE  : Merge together IPUMS CPS extract
 *
 * CREATED  : 23 May 2025
 *
 * STATA    : StataNow/SE 18.5 for Mac (Apple Silicon) Revision 04 Sep 2024
 *
-* INPUTS   : - 
+* INPUTS   : - All the .dta files from the IPUMS extract
 *
-* OUTPUTS  : - ../Intm/Appended_CPS_ORG.dta
+* OUTPUTS  : - ../Intm/cps_rtw_2003_2019.dta
 *
 * NOTES	   : -  
 *
 ****************************************************************************/
 
-log using "../code/Logs/01b_Generate_dta", replace	
+log using "../code/Logs/02b_Generate_dta", replace	
 
 cd "../data/CPS_Extract"
 

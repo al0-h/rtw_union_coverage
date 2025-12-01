@@ -237,15 +237,6 @@ foreach outcome in `outcomes'{
 	
 }
 
-* TO ADD
 
-* placebo cutoffs 
-
-* changing widnows 
-
-* increasing pre trend timing 
-
-* Appendix fiure of 10th, 25th, 50th, 75th, 90th percentiles of log wages and levels (dollars/hour), by RTW vs non‑RTW states, or pooled. like the sum table 
-	
 
 

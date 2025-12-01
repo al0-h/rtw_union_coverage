@@ -1,21 +1,21 @@
 /****************************************************************************
-* SCRIPT   : 01b_Gen_Appended.do 
+* SCRIPT   : 02b_Gen_Appended.do 
 *
-* PURPOSE  : Append all the ORG CPS data together	
+* PURPOSE  : Generate main dataset	
 *
 * CREATED  : 23 May 2025
 *
 * STATA    : StataNow/SE 18.5 for Mac (Apple Silicon) Revision 04 Sep 2024
 *
-* INPUTS   : - 
+* INPUTS   : - ../Intm/cps_rtw_2003_2019.dta
 *
-* OUTPUTS  : - ../Intm/Appended_CPS_ORG.dta
+* OUTPUTS  : - ../Intm/RTW_Analysis.dta
 *
-* NOTES	   : - 2003-2019 for same reasons as in Fortin et al. 2022	
+* NOTES	   : 
 *
 ****************************************************************************/
 
-log using "Logs/01b_Gen_Appended", replace	
+log using "Logs/02b_Gen_Appended", replace	
 
 * Load CPS &  Universe: wage/salary employees (private + public), ages 18–64, in ORG
 use "../data/cps_rtw_2003_2019.dta" if inrange(age,18,64) & inlist(empstat,10,12) & ///

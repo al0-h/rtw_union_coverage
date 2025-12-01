@@ -1,8 +1,8 @@
 /****************************************************************************
-* Script   : 01a_Create_CPS_RTW_ind.do
+* Script   : 02a_Create_CPS_RTW_ind.do
 *
 * PROJECT  : RTW Project
-* PURPOSE  : Create main dataset; Generates the RTW key for panel data 
+* PURPOSE  : Generates the RTW key for panel data 
 *
 * CREATED  : 23 May 2025
 *
@@ -14,7 +14,7 @@
 *
 ****************************************************************************/
 
-log using "Logs/01a_Create_CPS_RTW_ind", replace
+log using "Logs/02a_Create_CPS_RTW_ind", replace
 
 
 * RTW data excel sheet has the year and month that the right to work laws were passed.
