@@ -44,8 +44,8 @@ The replication package:
 
 ## Step-by-Step Replication Guide
 ```bash
-git clone https://github.com/al0-h/rtw_union_power.git
-cd rtw_union_power
+git clone https://github.com/al0-h/rtw_union_coverage.git
+cd rtw_union_coverage
 
 # 1) Create your local env file with your own IPUMS key you can get it here https://developer.ipums.org/docs/v1/workflows/create_extracts/cps/
 cp .env.example .env
